@@ -67,7 +67,7 @@ public abstract class Vehicle {
 
 	@Override
 	public String toString() {
-		return String.format("%-5s | %-15s | %-15s | %-6s | %-9s | €%-8.2f | %s", vehicleType, make, model, colour,
+		return String.format("%-5s | %-15s | %-17s | %-8s | %-9s | €%-8.2f | %s", vehicleType, make, model, colour,
 				fuelType, dailyRate, isAvailable ? "Available" : "Rented");
 	}
 
