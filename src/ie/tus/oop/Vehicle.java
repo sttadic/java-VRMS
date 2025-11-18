@@ -3,13 +3,15 @@ package ie.tus.oop;
 public abstract class Vehicle {
 	private String make;
 	private String model;
+	private String colour;
 	private FuelType fuelType;
 	private double dailyRate;
 	private boolean isAvailable;
 
-	public Vehicle(String make, String model, FuelType fuelType, double dailyRate) {
+	public Vehicle(String make, String model, String colour, FuelType fuelType, double dailyRate) {
 		this.make = make;
 		this.model = model;
+		this.colour = colour;
 		this.fuelType = fuelType;
 		this.dailyRate = dailyRate;
 		this.isAvailable = true;
@@ -21,6 +23,10 @@ public abstract class Vehicle {
 
 	public String getModel() {
 		return model;
+	}
+
+	public String getColour() {
+		return colour;
 	}
 
 	public FuelType getFuelType() {
