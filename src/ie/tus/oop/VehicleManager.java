@@ -31,8 +31,16 @@ public class VehicleManager {
 		return vehicles.removeIf(vehicle -> vehicle.getVehicleId() == vehicleId);
 	}
 
+	public Vehicle getVehicleById(int vehicleId) {
+		for (Vehicle vehicle : vehicles) {
+			if (vehicle.getVehicleId() == vehicleId) return vehicle;
+		}
+		return null;
+	}
+
 	public int getFleetSize() {
 		return vehicles.size();
 	}
+
 
 }
