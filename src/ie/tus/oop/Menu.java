@@ -17,21 +17,24 @@ public class Menu {
 
 	private void handleChoice() {
 		int choice = -1;
-		try {
-			choice = Integer.parseInt(scan.nextLine());
-		} catch (NumberFormatException e) {
-			out.println("Invalid Entry! Please try again.");
+		while (true) {
+			try {
+				choice = Integer.parseInt(scan.nextLine());
+				break;
+			} catch (NumberFormatException e) {
+				out.println("Invalid Entry! Please try again.");
+			}
 		}
 
 		switch (choice) {
-		case 1 -> vehicleInvertory();
+		case 1 -> vehicleInventory();
 		case 8 -> keepRunning = false;
 		default -> out.println("Invalid Selection! Please try again.");
 
 		}
 	}
 
-	private void vehicleInvertory() {
+	private void vehicleInventory() {
 
 	}
 
@@ -53,6 +56,6 @@ public class Menu {
 
 		// Option selection block
 		out.println("");
-		out.println("Select Options (1-8) > ");
+		out.println("Select Option (1-8) > ");
 	}
 }
