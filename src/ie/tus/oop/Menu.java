@@ -7,6 +7,11 @@ import java.util.Scanner;
 public class Menu {
 	private boolean keepRunning = true;
 	private Scanner scan = new Scanner(System.in);
+	private VehicleManager vehicleManager;
+
+	public Menu() {
+		vehicleManager = new VehicleManager();
+	}
 
 	public void runApplication() {
 		while (keepRunning) {
@@ -35,7 +40,20 @@ public class Menu {
 	}
 
 	private void vehicleInventory() {
+		var vehicles = vehicleManager.getAllVehicles();
 
+		if (vehicles.isEmpty()) {
+			out.println("No vehicles in inventory");
+			return;
+		}
+		out.println();
+		out.printf("%s | %-15s | %-15s | %-4s | %-9s | %-4s | %s%n", "ID", "MODEL", "MAKE", "COLOUR", "FUEL",
+				"PRICE/DAY", "AVAILABILITY");
+		out.printf("----------------------------------------------------------------------------------------%n");
+		for (int i = 0; i < vehicles.size(); i++) {
+			Vehicle vehicle = vehicles.get(i);
+			out.printf("%d  | %s%n", i + 1, vehicle.toString(), vehicle.isAvailable() ? "Available" : "Rented");
+		}
 	}
 
 	private void showOptions() {

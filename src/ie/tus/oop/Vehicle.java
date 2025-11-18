@@ -44,4 +44,15 @@ public abstract class Vehicle {
 	public double calculateRentalCost(int days) {
 		return this.dailyRate * days;
 	}
+
+	public void setAvailable(boolean available) {
+		this.isAvailable = available;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%-15s | %-15s | %-6s | %-9s | €%-8.2f | %s", make, model, colour,
+				fuelType.toString().toLowerCase(), dailyRate, isAvailable ? "Available" : "Rented");
+	}
+
 }

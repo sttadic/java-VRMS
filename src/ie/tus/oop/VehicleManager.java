@@ -22,4 +22,17 @@ public class VehicleManager {
 	public List<Vehicle> getAllVehicles() {
 		return new ArrayList<>(vehicles);
 	}
+
+	public void addVehicle(Vehicle vehicle) {
+		vehicles.add(vehicle);
+	}
+
+	public boolean removeVehicle(Vehicle vehicle) {
+		return vehicles.remove(vehicle);
+	}
+
+	public int getFleetSize() {
+		return vehicles.size();
+	}
+
 }
