@@ -33,6 +33,8 @@ public class Menu {
 
 		switch (choice) {
 		case 1 -> vehicleInventory();
+		case 2 -> addNewVehicle();
+		case 4 -> removeVehicle();
 		case 8 -> keepRunning = false;
 		default -> out.println("Invalid Selection! Please try again.");
 
@@ -47,12 +49,38 @@ public class Menu {
 			return;
 		}
 		out.println();
-		out.printf("%s | %-15s | %-15s | %-4s | %-9s | %-4s | %s%n", "ID", "MODEL", "MAKE", "COLOUR", "FUEL",
+		out.printf("%3s | %-15s | %-15s | %-4s | %-9s | %-4s | %s%n", "ID", "MODEL", "MAKE", "COLOUR", "FUEL",
 				"PRICE/DAY", "AVAILABILITY");
 		out.printf("----------------------------------------------------------------------------------------%n");
 		for (int i = 0; i < vehicles.size(); i++) {
 			Vehicle vehicle = vehicles.get(i);
-			out.printf("%d  | %s%n", i + 1, vehicle.toString(), vehicle.isAvailable() ? "Available" : "Rented");
+			out.printf("%2d  | %s%n", vehicle.getVehicleId(), vehicle.toString(),
+					vehicle.isAvailable() ? "Available" : "Rented");
+		}
+	}
+
+	private void addNewVehicle() {
+		// Hardcoded example
+		vehicleManager.addVehicle(new Car("Seat", "Arona", "Grey", FuelType.PETROL, 28.0, true, false));
+	}
+
+	private void removeVehicle() {
+		out.println("Enter ID of the vehicle you want to remove from fleet: ");
+		int vehicleId = -1;
+		while (true) {
+			try {
+				vehicleId = Integer.parseInt(scan.nextLine());
+				break;
+			} catch (NumberFormatException e) {
+				out.println("Invalid value! Try again.");
+			}
+		}
+		var removed = vehicleManager.removeVehicleById(vehicleId);
+
+		if (removed) {
+			out.println("Vehicle succesfully removed!");
+		} else {
+			out.println("Vehicle with id=" + vehicleId + " does not exist!");
 		}
 	}
 

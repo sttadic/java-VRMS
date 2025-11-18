@@ -27,8 +27,8 @@ public class VehicleManager {
 		vehicles.add(vehicle);
 	}
 
-	public boolean removeVehicle(Vehicle vehicle) {
-		return vehicles.remove(vehicle);
+	public boolean removeVehicleById(int vehicleId) {
+		return vehicles.removeIf(vehicle -> vehicle.getVehicleId() == vehicleId);
 	}
 
 	public int getFleetSize() {

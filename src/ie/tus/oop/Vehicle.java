@@ -1,6 +1,8 @@
 package ie.tus.oop;
 
 public abstract class Vehicle {
+	private static int nextId = 1;
+	private final int vehicleId;
 	private String make;
 	private String model;
 	private String colour;
@@ -9,12 +11,17 @@ public abstract class Vehicle {
 	private boolean isAvailable;
 
 	public Vehicle(String make, String model, String colour, FuelType fuelType, double dailyRate) {
+		this.vehicleId = nextId++;
 		this.make = make;
 		this.model = model;
 		this.colour = colour;
 		this.fuelType = fuelType;
 		this.dailyRate = dailyRate;
 		this.isAvailable = true;
+	}
+
+	public int getVehicleId() {
+		return vehicleId;
 	}
 
 	public String getMake() {
