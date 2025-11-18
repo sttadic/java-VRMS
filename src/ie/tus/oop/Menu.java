@@ -25,6 +25,7 @@ public class Menu {
 		while (true) {
 			try {
 				choice = Integer.parseInt(scan.nextLine());
+				out.println();
 				break;
 			} catch (NumberFormatException e) {
 				out.println("Invalid Entry! Please try again.");
@@ -49,14 +50,17 @@ public class Menu {
 			return;
 		}
 		out.println();
-		out.printf("%3s | %-15s | %-15s | %-4s | %-9s | %-4s | %s%n", "ID", "MODEL", "MAKE", "COLOUR", "FUEL",
+		out.printf("%3s | %-5s | %-15s | %-15s | %-4s | %-9s | %-4s | %s%n", "ID", "TYPE", "MODEL", "MAKE", "COLOUR", "FUEL",
 				"PRICE/DAY", "AVAILABILITY");
-		out.printf("----------------------------------------------------------------------------------------%n");
+		out.printf("------------------------------------------------------------------------------------------------%n");
 		for (int i = 0; i < vehicles.size(); i++) {
 			Vehicle vehicle = vehicles.get(i);
 			out.printf("%2d  | %s%n", vehicle.getVehicleId(), vehicle.toString(),
 					vehicle.isAvailable() ? "Available" : "Rented");
 		}
+
+		out.println("\nPress any button to continue...");
+		scan.nextLine();
 	}
 
 	private void addNewVehicle() {

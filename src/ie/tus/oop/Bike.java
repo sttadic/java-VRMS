@@ -5,6 +5,7 @@ public class Bike extends Vehicle {
 
 	public Bike(String make, String model, String colour, FuelType fuelType, double dailyRate, int size) {
 		super(make, model, colour, fuelType, dailyRate);
+		super.setVehicleType(VehicleType.BIKE);
 		this.size = size;
 	}
 

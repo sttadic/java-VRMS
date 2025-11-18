@@ -1,7 +1,7 @@
 package ie.tus.oop;
 
-public enum FuelType {
-	PETROL, DIESEL, ELECTRIC, HYBRID, NONE;
+public enum VehicleType {
+	CAR, VAN, BIKE;
 
 	@Override
 	public String toString() {

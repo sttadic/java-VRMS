@@ -3,6 +3,7 @@ package ie.tus.oop;
 public abstract class Vehicle {
 	private static int nextId = 1;
 	private final int vehicleId;
+	private VehicleType vehicleType;
 	private String make;
 	private String model;
 	private String colour;
@@ -18,6 +19,14 @@ public abstract class Vehicle {
 		this.fuelType = fuelType;
 		this.dailyRate = dailyRate;
 		this.isAvailable = true;
+	}
+
+	protected void setVehicleType(VehicleType type) {
+		this.vehicleType = type;
+	}
+
+	public VehicleType getVehicleType() {
+		return vehicleType;
 	}
 
 	public int getVehicleId() {
@@ -58,8 +67,8 @@ public abstract class Vehicle {
 
 	@Override
 	public String toString() {
-		return String.format("%-15s | %-15s | %-6s | %-9s | €%-8.2f | %s", make, model, colour,
-				fuelType.toString().toLowerCase(), dailyRate, isAvailable ? "Available" : "Rented");
+		return String.format("%-5s | %-15s | %-15s | %-6s | %-9s | €%-8.2f | %s", vehicleType, make, model, colour,
+				fuelType, dailyRate, isAvailable ? "Available" : "Rented");
 	}
 
 }
