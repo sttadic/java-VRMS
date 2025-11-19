@@ -56,7 +56,7 @@ public class RentalService {
 				}
 				break;
 			} catch (Exception e) {
-				out.println("Invalid entry: " + e.getMessage());
+				out.println("Invalid entry " + e.getMessage());
 			}
 		}
 		int finalVehicleId = vehicleId;

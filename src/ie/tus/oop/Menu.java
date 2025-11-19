@@ -37,6 +37,7 @@ public class Menu {
 		switch (choice) {
 		case 1 -> vehicleInventory();
 		case 2 -> addNewVehicle();
+		case 3 -> updateVehicle();
 		case 4 -> removeVehicle();
 		case 5 -> processRental();
 		case 6 -> processReturn();
@@ -70,8 +71,62 @@ public class Menu {
 	}
 
 	private void addNewVehicle() {
-		// Hardcoded example
-		vehicleManager.addVehicle(new Car("Seat", "Arona", "Grey", FuelType.PETROL, 28.0, true, false));
+		out.println("Select vehicle type to add: ");
+		out.println("1) Car");
+		out.println("2) Van");
+		out.println("3) Bike");
+
+		int typeChoice = -1;
+		try {
+			typeChoice = Integer.parseInt(scan.nextLine());
+
+		} catch (NumberFormatException e) {
+			out.println("Invalid choice.");
+			return;
+		}
+
+		out.print("Enter Make: ");
+		String make = scan.nextLine();
+		out.print("Enter Model: ");
+		String model = scan.nextLine();
+		out.print("Enter Colour: ");
+		String colour = scan.nextLine();
+		out.print("Enter Daily Rate: ");
+		double dailyRate = Double.parseDouble(scan.nextLine());
+		out.print("Enter Fuel Type (must be exact match: PETROL, DIESEL, ELECTRIC, HYBRID, NONE): ");
+		FuelType fuelType = FuelType.valueOf(scan.nextLine().toUpperCase());
+
+		Vehicle newVehicle = switch (typeChoice) {
+		case 1 -> {
+			out.print("Has Air Conditioning? (true/false): ");
+			boolean ac = Boolean.parseBoolean(scan.nextLine());
+			out.print("Has Navigation? (true/false): ");
+			boolean nav = Boolean.parseBoolean(scan.nextLine());
+			yield new Car(make, model, colour, fuelType, dailyRate, ac, nav);
+		}
+		case 2 -> {
+			out.print("Enter cargo capacity: ");
+			double cargoCapacity = Double.parseDouble(scan.nextLine());
+			yield new Van(make, model, colour, fuelType, dailyRate, cargoCapacity);
+		}
+		case 3 -> {
+			out.print("Enter engine size: ");
+			int engineSize = Integer.parseInt(scan.nextLine());
+			yield new Bike(make, model, colour, fuelType, dailyRate, engineSize);
+		}
+		default -> null;
+		};
+
+		if (newVehicle != null) {
+			vehicleManager.addVehicle(newVehicle);
+			out.println("Vehicle added successfully!");
+		} else {
+			out.println("Invalid vehicle type selected.");
+		}
+	}
+
+	private void updateVehicle() {
+		// TODO
 	}
 
 	private void removeVehicle() {
@@ -127,8 +182,9 @@ public class Menu {
 
 		out.printf("%-18s | %-3s | %-20s | %s%n", "CUSTOMER", "VEH_ID", "VEHICLE", "RENT DATE");
 		out.printf("----------------------------------------------------------------%n");
-		for(RentalTransaction rental : activeRentals) {
-			out.printf("%-18.18s | %-6s | %-20.20s | %s%n", rental.customerName(), rental.vehicleID(), rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
+		for (RentalTransaction rental : activeRentals) {
+			out.printf("%-18.18s | %-6s | %-20.20s | %s%n", rental.customerName(), rental.vehicleID(),
+					rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
 		}
 		rentalService.endRental();
 
@@ -139,8 +195,9 @@ public class Menu {
 
 		out.printf("%-18s | %-3s | %-20s | %s%n", "CUSTOMER", "VEH_ID", "VEHICLE", "RENT DATE");
 		out.printf("----------------------------------------------------------------%n");
-		for(RentalTransaction rental : activeRentals) {
-			out.printf("%-18.18s | %-6s | %-20.20s | %s%n", rental.customerName(), rental.vehicleID(), rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
+		for (RentalTransaction rental : activeRentals) {
+			out.printf("%-18.18s | %-6s | %-20.20s | %s%n", rental.customerName(), rental.vehicleID(),
+					rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
 		}
 	}
 
