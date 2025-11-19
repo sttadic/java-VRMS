@@ -8,9 +8,11 @@ public class Menu {
 	private boolean keepRunning = true;
 	private Scanner scan = new Scanner(System.in);
 	private VehicleManager vehicleManager;
+	private RentalService rentalService;
 
 	public Menu() {
 		vehicleManager = new VehicleManager();
+		rentalService = new RentalService(scan, vehicleManager);
 	}
 
 	public void runApplication() {
@@ -36,6 +38,7 @@ public class Menu {
 		case 1 -> vehicleInventory();
 		case 2 -> addNewVehicle();
 		case 4 -> removeVehicle();
+		case 5 -> processRental();
 		case 8 -> keepRunning = false;
 		default -> out.println("Invalid Selection! Please try again.");
 
@@ -50,9 +53,10 @@ public class Menu {
 			return;
 		}
 		out.println();
-		out.printf("%3s | %-5s | %-15s | %-17s | %-8s | %-9s | %-4s | %s%n", "ID", "TYPE", "MODEL", "MAKE", "COLOUR", "FUEL",
-				"PRICE/DAY", "AVAILABILITY");
-		out.printf("----------------------------------------------------------------------------------------------------%n");
+		out.printf("%3s | %-5s | %-15s | %-17s | %-8s | %-9s | %-4s | %s%n", "ID", "TYPE", "MODEL", "MAKE", "COLOUR",
+				"FUEL", "PRICE/DAY", "AVAILABILITY");
+		out.printf(
+				"----------------------------------------------------------------------------------------------------%n");
 		for (int i = 0; i < vehicles.size(); i++) {
 			Vehicle vehicle = vehicles.get(i);
 			out.printf("%2d  | %s%n", vehicle.getVehicleId(), vehicle.toString(),
@@ -88,6 +92,34 @@ public class Menu {
 		}
 	}
 
+	private void processRental() {
+		out.println("Customer name: ");
+		var customerName = "";
+		while (true) {
+			customerName = scan.nextLine().strip();
+			if (customerName.isEmpty()) {
+				out.println("Custmer name is a required field. Please enter a customer name: ");
+				continue;
+			}
+			break;
+		}
+
+		out.println();
+		out.printf("%3s | %-5s | %-15s | %-17s | %-8s | %-9s | %-4s | %s%n", "ID", "TYPE", "MODEL", "MAKE", "COLOUR",
+				"FUEL", "PRICE/DAY", "AVAILABILITY");
+		out.printf(
+				"----------------------------------------------------------------------------------------------------%n");
+		var vehicles = vehicleManager.getAllVehicles();
+		vehicles.forEach(vehicle -> {
+			if (vehicle.isAvailable() == true) {
+				out.printf("%2d  | %s%n", vehicle.getVehicleId(), vehicle.toString(),
+						vehicle.isAvailable() ? "Available" : "Rented");
+			}
+		});
+
+		rentalService.startRental(customerName);
+	}
+
 	private void showOptions() {
 		out.println("************************************************************");
 		out.println("*                                                          *");
@@ -108,4 +140,5 @@ public class Menu {
 		out.println("");
 		out.println("Select Option (1-8) > ");
 	}
+
 }
