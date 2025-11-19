@@ -1,7 +1,7 @@
 package ie.tus.oop;
 
-import java.util.Date;
+import java.time.LocalDate;
 
-public record RentalTransaction(String customerName, int vehicleID, Date rentalStartDate) {
+public record RentalTransaction(String customerName, int vehicleID, String vehicleMake, String vehicleModel, LocalDate rentalStartDate) {
 
 }

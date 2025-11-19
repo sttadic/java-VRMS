@@ -2,16 +2,19 @@ package ie.tus.oop;
 
 import static java.lang.System.out;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class RentalService {
-	private RentalTransaction transaction;
+	private ArrayList<RentalTransaction> transactions;
 	private VehicleManager vehicleManager;
 	private Scanner scan;
 
 	public RentalService(Scanner scan, VehicleManager vehicleManager) {
 		this.scan = scan;
 		this.vehicleManager = vehicleManager;
+		this.transactions = new ArrayList<>();
 	}
 
 	public void startRental(String customerName) {
@@ -33,11 +36,15 @@ public class RentalService {
 				out.println("Invalid input!");
 			}
 		}
-
+		transactions.add(new RentalTransaction(customerName, vehicleId, vehicle.getMake(), vehicle.getModel(), LocalDate.now()));
 		vehicle.setAvailable(false);
 	}
 
 	public void endRental() {
+	}
+
+	public ArrayList<RentalTransaction> getActiveRentals() {
+		return new ArrayList<>(transactions);
 	}
 
 	public double calculateTotalCost() {
