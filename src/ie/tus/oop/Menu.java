@@ -37,7 +37,7 @@ public class Menu {
 		switch (choice) {
 		case 1 -> vehicleInventory();
 		case 2 -> addNewVehicle();
-		case 3 -> updateVehicle();
+		case 3 -> updateRentalPrice();
 		case 4 -> removeVehicle();
 		case 5 -> processRental();
 		case 6 -> processReturn();
@@ -125,8 +125,44 @@ public class Menu {
 		}
 	}
 
-	private void updateVehicle() {
-		// TODO
+	private void updateRentalPrice() {
+		int vehicleId = -1;
+		Vehicle vehicleToUpdate = null;
+
+		while (true) {
+			out.print("Enter the ID of the vehicle to update: ");
+			try {
+				vehicleId = Integer.parseInt(scan.nextLine());
+				vehicleToUpdate = vehicleManager.getVehicleById(vehicleId);
+				if (vehicleToUpdate == null) {
+					out.println("Vehicle with ID " + vehicleId + " not found.");
+					continue;
+				}
+				break;
+			} catch (NumberFormatException e) {
+				out.println("Invalid ID format.");
+			}
+		}
+		Double newRate;
+		out.println("Current vehicle details: " + vehicleId + ". " + vehicleToUpdate.getMake() + " "
+				+ vehicleToUpdate.getModel() + " - €" + vehicleToUpdate.getDailyRate());
+		while (true) {
+			out.print("Enter new daily rate: ");
+			try {
+				newRate = Double.parseDouble(scan.nextLine());
+				if (newRate <= 0) {
+					out.println("Daily rate must be a positive number.");
+					continue;
+				}
+				break;
+			} catch (NumberFormatException e) {
+				out.println("Invalid format.");
+			}
+		}
+
+		vehicleToUpdate.setDailyRate(newRate);
+		out.println("Daily rate updated!");
+
 	}
 
 	private void removeVehicle() {
@@ -210,7 +246,7 @@ public class Menu {
 
 		out.println("(1) Display Vehicle Inventory");
 		out.println("(2) Add New Vehicle to Fleet");
-		out.println("(3) Update Vehicle Information");
+		out.println("(3) Update Rental Price");
 		out.println("(4) Remove Vehicle from Fleet");
 		out.println("(5) Process Vehicle Rental");
 		out.println("(6) Process Vehicle Return");

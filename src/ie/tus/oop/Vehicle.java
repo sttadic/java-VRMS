@@ -57,8 +57,8 @@ public abstract class Vehicle {
 		return isAvailable;
 	}
 
-	public double calculateRentalCost(int days) {
-		return this.dailyRate * days;
+	public void setDailyRate(double rate) {
+		this.dailyRate = rate;
 	}
 
 	public void setAvailable(boolean available) {
