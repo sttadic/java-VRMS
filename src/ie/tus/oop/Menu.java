@@ -39,6 +39,7 @@ public class Menu {
 		case 2 -> addNewVehicle();
 		case 4 -> removeVehicle();
 		case 5 -> processRental();
+		case 6 -> processReturn();
 		case 7 -> viewRentals();
 		case 8 -> keepRunning = false;
 		default -> out.println("Invalid Selection! Please try again.");
@@ -119,6 +120,18 @@ public class Menu {
 		});
 
 		rentalService.startRental(customerName);
+	}
+
+	private void processReturn() {
+		var activeRentals = rentalService.getActiveRentals();
+
+		out.printf("%-18s | %-3s | %-20s | %s%n", "CUSTOMER", "VEH_ID", "VEHICLE", "RENT DATE");
+		out.printf("----------------------------------------------------------------%n");
+		for(RentalTransaction rental : activeRentals) {
+			out.printf("%-18.18s | %-6s | %-20.20s | %s%n", rental.customerName(), rental.vehicleID(), rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
+		}
+		rentalService.endRental();
+
 	}
 
 	private void viewRentals() {
