@@ -67,8 +67,7 @@ public class Menu {
 				"----------------------------------------------------------------------------------------------------%n");
 		for (int i = 0; i < vehicles.size(); i++) {
 			Vehicle vehicle = vehicles.get(i);
-			out.printf("%2d  | %s%n", vehicle.getVehicleId(), vehicle.toString(),
-					vehicle.isAvailable() ? "Available" : "Rented");
+			out.printf("%2d  | %s%n", vehicle.getVehicleId(), vehicle.toString());
 		}
 
 		out.println("\nTotal number of vehicles: " + vehicleManager.getFleetSize());
@@ -130,7 +129,7 @@ public class Menu {
 		};
 
 		if (newVehicle != null) {
-			vehicleManager.addVehicle(newVehicle);
+			vehicleManager.addVehicles(newVehicle);
 			out.println("\nVehicle added successfully.");
 		} else {
 			out.println("\nSomething went wrong.");

@@ -1,6 +1,6 @@
 package ie.tus.oop;
 
-public abstract sealed class Vehicle permits Car, Van, Bike {
+public abstract sealed class Vehicle implements Rentable permits Car, Van, Bike {
 	private static int nextId = 1;
 	private final int vehicleId;
 	private VehicleType vehicleType;
@@ -49,10 +49,12 @@ public abstract sealed class Vehicle permits Car, Van, Bike {
 		return fuelType;
 	}
 
+	@Override
 	public double getDailyRate() {
 		return dailyRate;
 	}
 
+	@Override
 	public boolean isAvailable() {
 		return isAvailable;
 	}
@@ -61,6 +63,7 @@ public abstract sealed class Vehicle permits Car, Van, Bike {
 		this.dailyRate = rate;
 	}
 
+	@Override
 	public void setAvailable(boolean available) {
 		this.isAvailable = available;
 	}
@@ -68,7 +71,7 @@ public abstract sealed class Vehicle permits Car, Van, Bike {
 	@Override
 	public String toString() {
 		return String.format("%-5s | %-15s | %-17s | %-8s | %-9s | €%-8.2f | %s", vehicleType, make, model, colour,
-				fuelType, dailyRate, isAvailable ? "Available" : "Rented");
+				fuelType, dailyRate, getStatus());
 	}
 
 }
