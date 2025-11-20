@@ -6,6 +6,9 @@ public final class Car extends Vehicle {
 
 	public Car(String make, String model, String colour, FuelType fuelType, double dailyRate, boolean ac,
 			boolean navigation) {
+		// Flexible constructor body demonstration
+		Vehicle.validateDailyRate(dailyRate);
+
 		super(make, model, colour, fuelType, dailyRate);
 		super.setVehicleType(VehicleType.CAR);
 		this.airConditioning = ac;

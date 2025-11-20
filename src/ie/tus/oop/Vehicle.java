@@ -21,6 +21,12 @@ public abstract sealed class Vehicle implements Rentable permits Car, Van, Bike 
 		this.isAvailable = true;
 	}
 
+	protected static void validateDailyRate(double dailyRate) {
+		if (dailyRate <= 0) {
+			throw new IllegalArgumentException("Daily rate must be a positive number");
+		}
+	}
+
 	protected void setVehicleType(VehicleType type) {
 		this.vehicleType = type;
 	}
