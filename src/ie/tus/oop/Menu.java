@@ -248,7 +248,13 @@ public class Menu {
 					rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
 		}
 
-		rentalService.endRental();
+		RentalReceipt receipt = rentalService.endRental();
+
+		if (receipt != null) {
+			out.println("\n- Vehicle Returned -");
+			out.println(receipt.toString());
+		}
+
 		RentalUtils.waitForEnter(scan);
 	}
 

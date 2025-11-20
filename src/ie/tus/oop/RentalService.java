@@ -44,7 +44,7 @@ public class RentalService {
 				+ customerName + ".");
 	}
 
-	public void endRental() {
+	public RentalReceipt endRental() {
 		int vehicleId = -1;
 		Vehicle vehicleToReturn;
 		while (true) {
@@ -63,10 +63,21 @@ public class RentalService {
 		}
 		int finalVehicleId = vehicleId;
 		var transaction = transactions.stream().filter(t -> t.vehicleID() == finalVehicleId).findFirst().orElse(null);
+
+		if (transaction == null) {
+			out.println("Could not find matching rental transaction.");
+			return null;
+		}
+
 		transactions.remove(transaction);
 		vehicleToReturn.setAvailable(true);
-		out.printf("\nVehicle returned!. Total cost is €%.2f%n",
-				calculateTotalCost(vehicleToReturn.getDailyRate(), transaction.rentalStartDate(), LocalDate.now()));
+
+		LocalDate endDate = LocalDate.now();
+		double totalCost = calculateTotalCost(vehicleToReturn.getDailyRate(), transaction.rentalStartDate(), endDate);
+		String vehicleDescription = vehicleToReturn.getMake() + " " + vehicleToReturn.getModel();
+
+		return new RentalReceipt(transaction.customerName(), finalVehicleId, vehicleDescription,
+				transaction.rentalStartDate(), endDate, totalCost);
 	}
 
 	public ArrayList<RentalTransaction> getActiveRentals() {
