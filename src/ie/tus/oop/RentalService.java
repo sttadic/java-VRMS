@@ -5,38 +5,31 @@ import static java.lang.System.out;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class RentalService {
 	private ArrayList<RentalTransaction> transactions;
 	private VehicleManager vehicleManager;
-	private Scanner scan;
+	private final InputHandler inputHandler;
 
-	public RentalService(Scanner scan, VehicleManager vehicleManager) {
-		this.scan = scan;
+	public RentalService(VehicleManager vehicleManager, InputHandler inputHandler) {
 		this.vehicleManager = vehicleManager;
+		this.inputHandler = inputHandler;
 		this.transactions = new ArrayList<>();
 	}
 
 	public void startRental(String customerName) {
-		int vehicleId = -1;
-		Vehicle vehicleToRent;
+		int vehicleId = inputHandler.readInt("\nEnter vehicle ID to rent: ");
+		Vehicle vehicleToRent = null;
 
-		while (true) {
-			try {
-				out.print("\nSelect a vehicle ID to rent: ");
-				vehicleId = Integer.parseInt(scan.nextLine());
-				vehicleToRent = vehicleManager.getVehicleById(vehicleId);
-				if (vehicleToRent == null || !vehicleToRent.isAvailable()) {
-					throw new VehicleNotAvailableException("Car not available!");
-				}
-				break;
-			} catch (VehicleNotAvailableException e) {
-				out.println(e.getMessage());
-			} catch (NumberFormatException e) {
-				out.println("Invalid input!");
+		try {
+			vehicleToRent = vehicleManager.getVehicleById(vehicleId);
+			if (vehicleToRent == null || !vehicleToRent.isAvailable()) {
+				throw new VehicleNotAvailableException("Vehicle unavailable.");
 			}
+		} catch (VehicleNotAvailableException e) {
+			out.println(e.getMessage());
 		}
+
 		transactions.add(new RentalTransaction(customerName, vehicleId, vehicleToRent.getMake(),
 				vehicleToRent.getModel(), LocalDate.now()));
 		vehicleToRent.setAvailable(false);
@@ -45,22 +38,18 @@ public class RentalService {
 	}
 
 	public RentalReceipt endRental() {
-		int vehicleId = -1;
-		Vehicle vehicleToReturn;
-		while (true) {
-			try {
-				out.print("\nEnter a vehicle ID to register return: ");
-				vehicleId = Integer.parseInt(scan.nextLine());
-				vehicleToReturn = vehicleManager.getVehicleById(vehicleId);
-				if (vehicleToReturn == null || vehicleToReturn.isAvailable()) {
-					out.println("Invalid selection!");
-					continue;
-				}
-				break;
-			} catch (Exception e) {
-				out.println("Invalid entry " + e.getMessage());
+		int vehicleId = inputHandler.readInt("Enter vehicle ID to return: ");
+		Vehicle vehicleToReturn = null;
+
+		try {
+			vehicleToReturn = vehicleManager.getVehicleById(vehicleId);
+			if (vehicleToReturn == null || vehicleToReturn.isAvailable()) {
+				throw new VehicleNotAvailableException("Vehicle unavailable.");
 			}
+		} catch (VehicleNotAvailableException e) {
+			out.println(e.getMessage());
 		}
+
 		int finalVehicleId = vehicleId;
 		var transaction = transactions.stream().filter(t -> t.vehicleID() == finalVehicleId).findFirst().orElse(null);
 

@@ -6,13 +6,15 @@ import java.util.Scanner;
 
 public class Menu {
 	private boolean keepRunning = true;
-	private Scanner scan = new Scanner(System.in);
-	private VehicleManager vehicleManager;
-	private RentalService rentalService;
+	private final Scanner scan = new Scanner(System.in);
+	private final VehicleManager vehicleManager;
+	private final InputHandler inputHandler;
+	private final RentalService rentalService;
 
 	public Menu() {
 		vehicleManager = new VehicleManager();
-		rentalService = new RentalService(scan, vehicleManager);
+		inputHandler = new InputHandler(scan);
+		rentalService = new RentalService(vehicleManager, inputHandler);
 	}
 
 	public void runApplication() {
@@ -23,17 +25,7 @@ public class Menu {
 	}
 
 	private void handleChoice() {
-		int choice = -1;
-		while (true) {
-			try {
-				choice = Integer.parseInt(scan.nextLine());
-				out.println();
-				break;
-			} catch (NumberFormatException e) {
-				out.println("\nInvalid Entry!");
-				return;
-			}
-		}
+		int choice = inputHandler.readInt("\nSelect Option (1-8) > ");
 
 		switch (choice) {
 		case 1 -> vehicleInventory();
@@ -88,51 +80,43 @@ public class Menu {
 	private void addNewVehicle() {
 		RentalUtils.clearScreen();
 
-		int typeChoice = -1;
+		out.println("(1) Car");
+		out.println("(2) Van");
+		out.println("(3) Bike");
+		int typeChoice = inputHandler.readInt("\nSelect vehicle type to add > ");
+
+		String make = inputHandler.readString("Enter Make: ");
+		String model = inputHandler.readString("Enter Model: ");
+		String colour = inputHandler.readString("Enter Colour: ");
+		double dailyRate = inputHandler.readDouble("Enter Daily Rate: ");
+		out.println("\n(1) Petrol");
+		out.println("(2) Diesel");
+		out.println("(3) Electric");
+		out.println("(4) Hybrid");
+		out.println("(5) None");
+		FuelType fuelType;
 		while (true) {
-			out.println("(1) Car");
-			out.println("(2) Van");
-			out.println("(3) Bike");
-			out.print("\nSelect vehicle type to add: ");
 			try {
-				typeChoice = Integer.parseInt(scan.nextLine());
-				if (typeChoice < 1 || typeChoice > 3) {
-					out.println("Invalid choice.\n");
-					continue;
-				}
+				int fuelChoice = inputHandler.readInt("Select Fuel Type > ");
+				fuelType = FuelType.values()[fuelChoice - 1];
 				break;
-			} catch (NumberFormatException e) {
-				out.println("Invalid choice.\n");
+			} catch (ArrayIndexOutOfBoundsException e) {
+				out.println("Invalid value selected. Please enter one of the expected values.");
 			}
 		}
 
-		out.print("Enter Make: ");
-		String make = scan.nextLine();
-		out.print("Enter Model: ");
-		String model = scan.nextLine();
-		out.print("Enter Colour: ");
-		String colour = scan.nextLine();
-		out.print("Enter Daily Rate: ");
-		double dailyRate = Double.parseDouble(scan.nextLine());
-		out.print("Enter Fuel Type (must be exact match: PETROL, DIESEL, ELECTRIC, HYBRID, NONE): ");
-		FuelType fuelType = FuelType.valueOf(scan.nextLine().toUpperCase());
-
 		Vehicle newVehicle = switch (typeChoice) {
 		case 1 -> {
-			out.print("Has Air Conditioning? (true/false): ");
-			boolean ac = Boolean.parseBoolean(scan.nextLine());
-			out.print("Has Navigation? (true/false): ");
-			boolean nav = Boolean.parseBoolean(scan.nextLine());
+			boolean ac = inputHandler.readBoolean("Has Air Conditioning? (t)rue/(f)alse: ");
+			boolean nav = inputHandler.readBoolean("Has Navigation? (t)rue/(f)alse: ");
 			yield new Car(make, model, colour, fuelType, dailyRate, ac, nav);
 		}
 		case 2 -> {
-			out.print("Enter cargo capacity: ");
-			double cargoCapacity = Double.parseDouble(scan.nextLine());
+			double cargoCapacity = inputHandler.readDouble("Enter Cargo Capacity: ");
 			yield new Van(make, model, colour, fuelType, dailyRate, cargoCapacity);
 		}
 		case 3 -> {
-			out.print("Enter engine size: ");
-			int engineSize = Integer.parseInt(scan.nextLine());
+			int engineSize = inputHandler.readInt("Enter Wheel Size: ");
 			yield new Bike(make, model, colour, fuelType, dailyRate, engineSize);
 		}
 		default -> null;
@@ -142,7 +126,8 @@ public class Menu {
 			vehicleManager.addVehicles(newVehicle);
 			out.println("\nVehicle added successfully.");
 		} else {
-			out.println("\nSomething went wrong.");
+			out.println("\nSomething went wrong. Please try again.");
+			return;
 		}
 
 		RentalUtils.waitForEnter(scan);
@@ -150,40 +135,20 @@ public class Menu {
 
 	private void updateRentalPrice() {
 		RentalUtils.clearScreen();
-		int vehicleId = -1;
-		Vehicle vehicleToUpdate = null;
 
-		while (true) {
-			out.print("Enter the ID of the vehicle to update: ");
-			try {
-				vehicleId = Integer.parseInt(scan.nextLine());
-				vehicleToUpdate = vehicleManager.getVehicleById(vehicleId);
-				if (vehicleToUpdate == null) {
-					out.println("Vehicle with ID " + vehicleId + " not found.");
-					continue;
-				}
-				break;
-			} catch (NumberFormatException e) {
-				out.println("Invalid ID format.");
-			}
+		int vehicleId = inputHandler.readInt("Enter the ID of the vehicle to update: ");
+		Vehicle vehicleToUpdate = vehicleManager.getVehicleById(vehicleId);
+
+		if (vehicleToUpdate == null) {
+			out.println("Vehicle with ID " + vehicleId + " not found.");
+			RentalUtils.waitForEnter(scan);
+			return;
 		}
 
-		Double newRate;
 		out.println("Current vehicle details: " + vehicleId + ". " + vehicleToUpdate.getMake() + " "
 				+ vehicleToUpdate.getModel() + " - €" + vehicleToUpdate.getDailyRate());
-		while (true) {
-			out.print("Enter new daily rate: ");
-			try {
-				newRate = Double.parseDouble(scan.nextLine());
-				if (newRate <= 0) {
-					out.println("Daily rate must be a positive number.");
-					continue;
-				}
-				break;
-			} catch (NumberFormatException e) {
-				out.println("Invalid format.");
-			}
-		}
+
+		double newRate = inputHandler.readDouble("Enter new Daily Rate");
 
 		vehicleToUpdate.setDailyRate(newRate);
 		out.println("\nPrice updated.");
@@ -193,16 +158,7 @@ public class Menu {
 	private void removeVehicle() {
 		RentalUtils.clearScreen();
 
-		int vehicleId = -1;
-		out.println("Enter ID of the vehicle you want to remove from fleet: ");
-		while (true) {
-			try {
-				vehicleId = Integer.parseInt(scan.nextLine());
-				break;
-			} catch (NumberFormatException e) {
-				out.println("Invalid value! Try again.");
-			}
-		}
+		int vehicleId = inputHandler.readInt("Enter ID of the vehicle you want to remove from fleet: ");
 		var removed = vehicleManager.removeVehicleById(vehicleId);
 
 		if (removed) {
@@ -218,15 +174,7 @@ public class Menu {
 		RentalUtils.clearScreen();
 
 		out.print("Customer name: ");
-		var customerName = "";
-		while (true) {
-			customerName = scan.nextLine().strip();
-			if (customerName.isEmpty()) {
-				out.println("Custmer name is a required field. Please enter a customer name: ");
-				continue;
-			}
-			break;
-		}
+		String customerName = inputHandler.readString("Customer name: ");
 
 		out.println();
 		out.printf("%3s | %-5s | %-15s | %-17s | %-8s | %-9s | %-4s | %s%n", "ID", "TYPE", "MODEL", "MAKE", "COLOUR",
@@ -244,6 +192,7 @@ public class Menu {
 
 	private void processReturn() {
 		RentalUtils.clearScreen();
+
 		var activeRentals = rentalService.getActiveRentals();
 
 		out.printf("%-18s | %-3s | %-20s | %s%n", "CUSTOMER", "VEH_ID", "VEHICLE", "RENT DATE");
@@ -293,9 +242,6 @@ public class Menu {
 		out.println("(6) Process Vehicle Return");
 		out.println("(7) View Active Rental Records");
 		out.println("(8) Exit");
-
-		// Option selection block
-		out.print("\nSelect Option (1-8) > ");
 	}
 
 }
