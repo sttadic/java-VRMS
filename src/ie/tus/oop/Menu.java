@@ -61,13 +61,23 @@ public class Menu {
 			return;
 		}
 		out.println();
-		out.printf("%3s | %-5s | %-15s | %-17s | %-8s | %-9s | %-4s | %s%n", "ID", "TYPE", "MODEL", "MAKE", "COLOUR",
-				"FUEL", "PRICE/DAY", "AVAILABILITY");
+		out.printf("%3s | %-5s | %-15s | %-17s | %-8s | %-9s | %-4s | %-10s | %s%n", "ID", "TYPE", "MODEL", "MAKE",
+				"COLOUR", "FUEL", "PRICE/DAY", "AVAILABILITY", "DETAILS");
 		out.printf(
-				"----------------------------------------------------------------------------------------------------%n");
-		for (int i = 0; i < vehicles.size(); i++) {
-			Vehicle vehicle = vehicles.get(i);
-			out.printf("%2d  | %s%n", vehicle.getVehicleId(), vehicle.toString());
+				"----------------------------------------------------------------------------------------------------------------------------------%n");
+
+		for (Vehicle vehicle : vehicles) {
+			out.printf("%2d  | %s", vehicle.getVehicleId(), vehicle.toString());
+			// Pattern matching
+			String specificDetails = switch (vehicle) {
+			case Car c -> String.format("    | AC: %s, Navigation: %s", c.isAirConditioning(), c.isNavigation());
+			case Van v -> String.format("    | Cargo Capacity: %.2f kg", v.getCargoCapacityKg());
+			case Bike b -> String.format("    | Size: %d\"", b.getSize());
+			default -> "";
+			};
+			if (!specificDetails.isEmpty()) {
+				out.println(specificDetails);
+			}
 		}
 
 		out.println("\nTotal number of vehicles: " + vehicleManager.getFleetSize());
@@ -225,12 +235,8 @@ public class Menu {
 				"----------------------------------------------------------------------------------------------------%n");
 
 		var vehicles = vehicleManager.getAllVehicles();
-		vehicles.forEach(vehicle -> {
-			if (vehicle.isAvailable() == true) {
-				out.printf("%2d  | %s%n", vehicle.getVehicleId(), vehicle.toString(),
-						vehicle.isAvailable() ? "Available" : "Rented");
-			}
-		});
+		vehicles.stream().filter(Vehicle::isAvailable)
+				.forEach(vehicle -> out.printf("%2d  | %s%n", vehicle.getVehicleId(), vehicle.toString()));
 
 		rentalService.startRental(customerName);
 		RentalUtils.waitForEnter(scan);
