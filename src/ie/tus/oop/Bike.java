@@ -1,6 +1,6 @@
 package ie.tus.oop;
 
-public class Bike extends Vehicle {
+public final class Bike extends Vehicle {
 	private int size;
 
 	public Bike(String make, String model, String colour, FuelType fuelType, double dailyRate, int size) {

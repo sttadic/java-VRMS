@@ -1,6 +1,6 @@
 package ie.tus.oop;
 
-public abstract class Vehicle {
+public abstract sealed class Vehicle permits Car, Van, Bike {
 	private static int nextId = 1;
 	private final int vehicleId;
 	private VehicleType vehicleType;

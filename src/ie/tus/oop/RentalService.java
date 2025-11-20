@@ -60,13 +60,11 @@ public class RentalService {
 			}
 		}
 		int finalVehicleId = vehicleId;
-		var transaction = transactions.stream()
-				.filter(t -> t.vehicleID() == finalVehicleId)
-				.findFirst()
-				.orElse(null);
+		var transaction = transactions.stream().filter(t -> t.vehicleID() == finalVehicleId).findFirst().orElse(null);
 		transactions.remove(transaction);
 		vehicle.setAvailable(true);
-		out.printf("\nVehicle returned!. Total cost is €%.2f%n", calculateTotalCost(vehicle.getDailyRate(), transaction.rentalStartDate(), LocalDate.now()));
+		out.printf("\nVehicle returned!. Total cost is €%.2f%n",
+				calculateTotalCost(vehicle.getDailyRate(), transaction.rentalStartDate(), LocalDate.now()));
 	}
 
 	public ArrayList<RentalTransaction> getActiveRentals() {

@@ -1,6 +1,6 @@
 package ie.tus.oop;
 
-public class Car extends Vehicle {
+public final class Car extends Vehicle {
 	private boolean airConditioning;
 	private boolean navigation;
 

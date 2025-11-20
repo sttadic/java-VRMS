@@ -42,7 +42,10 @@ public class Menu {
 		case 5 -> processRental();
 		case 6 -> processReturn();
 		case 7 -> viewRentals();
-		case 8 -> keepRunning = false;
+		case 8 -> {
+			scan.close();
+			keepRunning = false;
+		}
 		default -> out.println("Invalid Selection! Please try again.");
 
 		}

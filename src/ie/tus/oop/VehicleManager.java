@@ -33,7 +33,9 @@ public class VehicleManager {
 
 	public Vehicle getVehicleById(int vehicleId) {
 		for (Vehicle vehicle : vehicles) {
-			if (vehicle.getVehicleId() == vehicleId) return vehicle;
+			if (vehicle.getVehicleId() == vehicleId) {
+				return vehicle;
+			}
 		}
 		return null;
 	}
@@ -41,6 +43,5 @@ public class VehicleManager {
 	public int getFleetSize() {
 		return vehicles.size();
 	}
-
 
 }
