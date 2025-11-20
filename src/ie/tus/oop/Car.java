@@ -27,4 +27,9 @@ public final class Car extends Vehicle {
 		return navigation;
 	}
 
+	@Override
+	public String getSpecs() {
+		return String.format("    | AC: %s, Navigation: %s", isAirConditioning(), isNavigation());
+	}
+
 }

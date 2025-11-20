@@ -15,4 +15,9 @@ public final class Van extends Vehicle {
 		return cargoCapacityKg;
 	}
 
+	@Override
+	public String getSpecs() {
+		return String.format("    | Cargo Capacity: %.2f kg", getCargoCapacityKg());
+	}
+
 }

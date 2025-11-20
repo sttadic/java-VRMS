@@ -61,12 +61,7 @@ public class Menu {
 		for (Vehicle vehicle : vehicles) {
 			out.printf("%2d  | %s", vehicle.getVehicleId(), vehicle.toString());
 			// Pattern matching
-			String specificDetails = switch (vehicle) {
-			case Car c -> String.format("    | AC: %s, Navigation: %s", c.isAirConditioning(), c.isNavigation());
-			case Van v -> String.format("    | Cargo Capacity: %.2f kg", v.getCargoCapacityKg());
-			case Bike b -> String.format("    | Size: %d\"", b.getSize());
-			default -> "";
-			};
+			String specificDetails = vehicle.getSpecs();
 			if (!specificDetails.isEmpty()) {
 				out.println(specificDetails);
 			}
@@ -146,9 +141,9 @@ public class Menu {
 		}
 
 		out.println("Current vehicle details: " + vehicleId + ". " + vehicleToUpdate.getMake() + " "
-				+ vehicleToUpdate.getModel() + " - €" + vehicleToUpdate.getDailyRate());
+				+ vehicleToUpdate.getModel() + " - €" + String.format("%.2f", vehicleToUpdate.getDailyRate()));
 
-		double newRate = inputHandler.readDouble("Enter new Daily Rate");
+		double newRate = inputHandler.readDouble("Enter new Daily Rate: ");
 
 		vehicleToUpdate.setDailyRate(newRate);
 		out.println("\nPrice updated.");

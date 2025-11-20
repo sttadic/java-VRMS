@@ -21,18 +21,14 @@ public abstract sealed class Vehicle implements Rentable permits Car, Van, Bike 
 		this.isAvailable = true;
 	}
 
-	protected static void validateDailyRate(double dailyRate) {
-		if (dailyRate <= 0) {
-			throw new IllegalArgumentException("Daily rate must be a positive number");
-		}
+	public VehicleType getVehicleType() {
+		return vehicleType;
 	}
+
+	public abstract String getSpecs();
 
 	protected void setVehicleType(VehicleType type) {
 		this.vehicleType = type;
-	}
-
-	public VehicleType getVehicleType() {
-		return vehicleType;
 	}
 
 	public int getVehicleId() {
@@ -60,13 +56,19 @@ public abstract sealed class Vehicle implements Rentable permits Car, Van, Bike 
 		return dailyRate;
 	}
 
+	public void setDailyRate(double rate) {
+		this.dailyRate = rate;
+	}
+
+	protected static void validateDailyRate(double dailyRate) {
+		if (dailyRate <= 0) {
+			throw new IllegalArgumentException("Daily rate must be a positive number");
+		}
+	}
+
 	@Override
 	public boolean isAvailable() {
 		return isAvailable;
-	}
-
-	public void setDailyRate(double rate) {
-		this.dailyRate = rate;
 	}
 
 	@Override
