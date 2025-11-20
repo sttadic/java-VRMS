@@ -3,7 +3,6 @@ package ie.tus.oop;
 import static java.lang.System.out;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 public class RentalService {
@@ -28,6 +27,7 @@ public class RentalService {
 			}
 		} catch (VehicleNotAvailableException e) {
 			out.println(e.getMessage());
+			return;
 		}
 
 		transactions.add(new RentalTransaction(customerName, vehicleId, vehicleToRent.getMake(),
@@ -38,7 +38,7 @@ public class RentalService {
 	}
 
 	public RentalReceipt endRental() {
-		int vehicleId = inputHandler.readInt("Enter vehicle ID to return: ");
+		int vehicleId = inputHandler.readInt("\nEnter vehicle ID to return: ");
 		Vehicle vehicleToReturn = null;
 
 		try {
@@ -48,6 +48,7 @@ public class RentalService {
 			}
 		} catch (VehicleNotAvailableException e) {
 			out.println(e.getMessage());
+			return null;
 		}
 
 		int finalVehicleId = vehicleId;
@@ -60,9 +61,19 @@ public class RentalService {
 
 		transactions.remove(transaction);
 		vehicleToReturn.setAvailable(true);
-
 		LocalDate endDate = LocalDate.now();
-		double totalCost = calculateTotalCost(vehicleToReturn.getDailyRate(), transaction.rentalStartDate(), endDate);
+
+		// Pattern matching for instanceof
+		double effectiveRate = vehicleToReturn.getDailyRate();
+		if (vehicleToReturn instanceof Car c && c.getFuelType() == FuelType.ELECTRIC) {
+			out.println("Applying 15% discount for electric car!");
+			effectiveRate *= .85;
+		} else if (vehicleToReturn.getFuelType() == FuelType.ELECTRIC) {
+			out.println("Applying 10% discount for electric vehicle!");
+			effectiveRate *= .90;
+		}
+
+		double totalCost = Rentable.calculateRentalCost(effectiveRate, transaction.rentalStartDate(), endDate);
 		String vehicleDescription = vehicleToReturn.getMake() + " " + vehicleToReturn.getModel();
 
 		return new RentalReceipt(transaction.customerName(), finalVehicleId, vehicleDescription,
@@ -71,11 +82,6 @@ public class RentalService {
 
 	public ArrayList<RentalTransaction> getActiveRentals() {
 		return new ArrayList<>(transactions);
-	}
-
-	public double calculateTotalCost(double rate, LocalDate startDate, LocalDate endDate) {
-		long diff = ChronoUnit.DAYS.between(startDate, endDate);
-		return rate * (diff + 1);
 	}
 
 }

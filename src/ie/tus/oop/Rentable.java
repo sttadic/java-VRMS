@@ -1,5 +1,8 @@
 package ie.tus.oop;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 public interface Rentable {
 	double getDailyRate();
 
@@ -13,7 +16,8 @@ public interface Rentable {
 	}
 
 	// Static method
-	static double calculateRentalCost(double dailyRate, long numberOfDays) {
+	static double calculateRentalCost(double dailyRate, LocalDate startDate, LocalDate endDate) {
+		long numberOfDays = ChronoUnit.DAYS.between(startDate, endDate);
 		if (numberOfDays < 1) {
 			return dailyRate;
 		}

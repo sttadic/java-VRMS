@@ -168,9 +168,7 @@ public class Menu {
 	private void processRental() {
 		RentalUtils.clearScreen();
 
-		out.print("Customer name: ");
 		String customerName = inputHandler.readString("Customer name: ");
-
 		out.println();
 		out.printf("%3s | %-5s | %-15s | %-17s | %-8s | %-9s | %-4s | %s%n", "ID", "TYPE", "MODEL", "MAKE", "COLOUR",
 				"FUEL", "PRICE/DAY", "AVAILABILITY");
