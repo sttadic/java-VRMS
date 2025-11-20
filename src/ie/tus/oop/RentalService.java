@@ -20,14 +20,14 @@ public class RentalService {
 
 	public void startRental(String customerName) {
 		int vehicleId = -1;
-		Vehicle vehicle;
+		Vehicle vehicleToRent;
 
 		while (true) {
 			try {
-				out.println("Select a vehicle ID to rent: ");
+				out.print("\nSelect a vehicle ID to rent: ");
 				vehicleId = Integer.parseInt(scan.nextLine());
-				vehicle = vehicleManager.getVehicleById(vehicleId);
-				if (vehicle == null || !vehicle.isAvailable()) {
+				vehicleToRent = vehicleManager.getVehicleById(vehicleId);
+				if (vehicleToRent == null || !vehicleToRent.isAvailable()) {
 					throw new VehicleNotAvailableException("Car not available!");
 				}
 				break;
@@ -37,20 +37,22 @@ public class RentalService {
 				out.println("Invalid input!");
 			}
 		}
-		transactions.add(
-				new RentalTransaction(customerName, vehicleId, vehicle.getMake(), vehicle.getModel(), LocalDate.now()));
-		vehicle.setAvailable(false);
+		transactions.add(new RentalTransaction(customerName, vehicleId, vehicleToRent.getMake(),
+				vehicleToRent.getModel(), LocalDate.now()));
+		vehicleToRent.setAvailable(false);
+		out.println("\nVehicle " + vehicleToRent.getMake() + " " + vehicleToRent.getModel() + " succesfully rented to "
+				+ customerName + ".");
 	}
 
 	public void endRental() {
 		int vehicleId = -1;
-		Vehicle vehicle;
+		Vehicle vehicleToReturn;
 		while (true) {
 			try {
-				out.println("Enter a vehicle ID to register return: ");
+				out.print("\nEnter a vehicle ID to register return: ");
 				vehicleId = Integer.parseInt(scan.nextLine());
-				vehicle = vehicleManager.getVehicleById(vehicleId);
-				if (vehicle == null || vehicle.isAvailable()) {
+				vehicleToReturn = vehicleManager.getVehicleById(vehicleId);
+				if (vehicleToReturn == null || vehicleToReturn.isAvailable()) {
 					out.println("Invalid selection!");
 					continue;
 				}
@@ -62,9 +64,9 @@ public class RentalService {
 		int finalVehicleId = vehicleId;
 		var transaction = transactions.stream().filter(t -> t.vehicleID() == finalVehicleId).findFirst().orElse(null);
 		transactions.remove(transaction);
-		vehicle.setAvailable(true);
+		vehicleToReturn.setAvailable(true);
 		out.printf("\nVehicle returned!. Total cost is €%.2f%n",
-				calculateTotalCost(vehicle.getDailyRate(), transaction.rentalStartDate(), LocalDate.now()));
+				calculateTotalCost(vehicleToReturn.getDailyRate(), transaction.rentalStartDate(), LocalDate.now()));
 	}
 
 	public ArrayList<RentalTransaction> getActiveRentals() {

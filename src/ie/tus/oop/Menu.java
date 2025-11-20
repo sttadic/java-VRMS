@@ -30,7 +30,8 @@ public class Menu {
 				out.println();
 				break;
 			} catch (NumberFormatException e) {
-				out.println("Invalid Entry! Please try again.");
+				out.println("\nInvalid Entry!");
+				return;
 			}
 		}
 
@@ -46,12 +47,13 @@ public class Menu {
 			scan.close();
 			keepRunning = false;
 		}
-		default -> out.println("Invalid Selection! Please try again.");
+		default -> out.println("\nInvalid Selection!");
 
 		}
 	}
 
 	private void vehicleInventory() {
+		RentalUtils.clearScreen();
 		var vehicles = vehicleManager.getAllVehicles();
 
 		if (vehicles.isEmpty()) {
@@ -69,23 +71,28 @@ public class Menu {
 					vehicle.isAvailable() ? "Available" : "Rented");
 		}
 
-		out.println("\nPress Enter to return to main menu...");
-		scan.nextLine();
+		RentalUtils.waitForEnter(scan);
 	}
 
 	private void addNewVehicle() {
-		out.println("Select vehicle type to add: ");
-		out.println("1) Car");
-		out.println("2) Van");
-		out.println("3) Bike");
+		RentalUtils.clearScreen();
 
 		int typeChoice = -1;
-		try {
-			typeChoice = Integer.parseInt(scan.nextLine());
-
-		} catch (NumberFormatException e) {
-			out.println("Invalid choice.");
-			return;
+		while (true) {
+			out.println("(1) Car");
+			out.println("(2) Van");
+			out.println("(3) Bike");
+			out.print("\nSelect vehicle type to add: ");
+			try {
+				typeChoice = Integer.parseInt(scan.nextLine());
+				if (typeChoice < 1 || typeChoice > 3) {
+					out.println("Invalid choice.\n");
+					continue;
+				}
+				break;
+			} catch (NumberFormatException e) {
+				out.println("Invalid choice.\n");
+			}
 		}
 
 		out.print("Enter Make: ");
@@ -122,13 +129,16 @@ public class Menu {
 
 		if (newVehicle != null) {
 			vehicleManager.addVehicle(newVehicle);
-			out.println("Vehicle added successfully!");
+			out.println("\nVehicle added successfully.");
 		} else {
-			out.println("Invalid vehicle type selected.");
+			out.println("\nSomething went wrong.");
 		}
+
+		RentalUtils.waitForEnter(scan);
 	}
 
 	private void updateRentalPrice() {
+		RentalUtils.clearScreen();
 		int vehicleId = -1;
 		Vehicle vehicleToUpdate = null;
 
@@ -146,6 +156,7 @@ public class Menu {
 				out.println("Invalid ID format.");
 			}
 		}
+
 		Double newRate;
 		out.println("Current vehicle details: " + vehicleId + ". " + vehicleToUpdate.getMake() + " "
 				+ vehicleToUpdate.getModel() + " - €" + vehicleToUpdate.getDailyRate());
@@ -164,13 +175,15 @@ public class Menu {
 		}
 
 		vehicleToUpdate.setDailyRate(newRate);
-		out.println("Daily rate updated!");
-
+		out.println("\nPrice updated.");
+		RentalUtils.waitForEnter(scan);
 	}
 
 	private void removeVehicle() {
-		out.println("Enter ID of the vehicle you want to remove from fleet: ");
+		RentalUtils.clearScreen();
+
 		int vehicleId = -1;
+		out.println("Enter ID of the vehicle you want to remove from fleet: ");
 		while (true) {
 			try {
 				vehicleId = Integer.parseInt(scan.nextLine());
@@ -182,14 +195,18 @@ public class Menu {
 		var removed = vehicleManager.removeVehicleById(vehicleId);
 
 		if (removed) {
-			out.println("Vehicle succesfully removed!");
+			out.println("\nVehicle succesfully removed.");
 		} else {
-			out.println("Vehicle with id=" + vehicleId + " does not exist!");
+			out.println("\nVehicle with id=" + vehicleId + " does not exist!");
 		}
+
+		RentalUtils.waitForEnter(scan);
 	}
 
 	private void processRental() {
-		out.println("Customer name: ");
+		RentalUtils.clearScreen();
+
+		out.print("Customer name: ");
 		var customerName = "";
 		while (true) {
 			customerName = scan.nextLine().strip();
@@ -205,6 +222,7 @@ public class Menu {
 				"FUEL", "PRICE/DAY", "AVAILABILITY");
 		out.printf(
 				"----------------------------------------------------------------------------------------------------%n");
+
 		var vehicles = vehicleManager.getAllVehicles();
 		vehicles.forEach(vehicle -> {
 			if (vehicle.isAvailable() == true) {
@@ -214,22 +232,27 @@ public class Menu {
 		});
 
 		rentalService.startRental(customerName);
+		RentalUtils.waitForEnter(scan);
 	}
 
 	private void processReturn() {
+		RentalUtils.clearScreen();
 		var activeRentals = rentalService.getActiveRentals();
 
 		out.printf("%-18s | %-3s | %-20s | %s%n", "CUSTOMER", "VEH_ID", "VEHICLE", "RENT DATE");
 		out.printf("----------------------------------------------------------------%n");
+
 		for (RentalTransaction rental : activeRentals) {
 			out.printf("%-18.18s | %-6s | %-20.20s | %s%n", rental.customerName(), rental.vehicleID(),
 					rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
 		}
-		rentalService.endRental();
 
+		rentalService.endRental();
+		RentalUtils.waitForEnter(scan);
 	}
 
 	private void viewRentals() {
+		RentalUtils.clearScreen();
 		var activeRentals = rentalService.getActiveRentals();
 
 		out.printf("%-18s | %-3s | %-20s | %s%n", "CUSTOMER", "VEH_ID", "VEHICLE", "RENT DATE");
@@ -238,6 +261,8 @@ public class Menu {
 			out.printf("%-18.18s | %-6s | %-20.20s | %s%n", rental.customerName(), rental.vehicleID(),
 					rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
 		}
+
+		RentalUtils.waitForEnter(scan);
 	}
 
 	private void showOptions() {
@@ -257,8 +282,7 @@ public class Menu {
 		out.println("(8) Exit");
 
 		// Option selection block
-		out.println("");
-		out.println("Select Option (1-8) > ");
+		out.print("\nSelect Option (1-8) > ");
 	}
 
 }
