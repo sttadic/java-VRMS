@@ -12,6 +12,10 @@ public final class Car extends Vehicle {
 		this.navigation = navigation;
 	}
 
+	public Car(String make, String model, String colour, FuelType fuelType, double dailyRate) {
+		this(make, model, colour, fuelType, dailyRate, false, false);
+	}
+
 	public boolean isAirConditioning() {
 		return airConditioning;
 	}

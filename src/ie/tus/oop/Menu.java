@@ -71,6 +71,8 @@ public class Menu {
 					vehicle.isAvailable() ? "Available" : "Rented");
 		}
 
+		out.println("\nTotal number of vehicles: " + vehicleManager.getFleetSize());
+
 		RentalUtils.waitForEnter(scan);
 	}
 

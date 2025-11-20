@@ -23,12 +23,8 @@ public class VehicleManager {
 		return new ArrayList<>(vehicles);
 	}
 
-	public void addVehicle(Vehicle vehicle) {
-		vehicles.add(vehicle);
-	}
-
-	public boolean removeVehicleById(int vehicleId) {
-		return vehicles.removeIf(vehicle -> vehicle.getVehicleId() == vehicleId);
+	public int getFleetSize() {
+		return vehicles.size();
 	}
 
 	public Vehicle getVehicleById(int vehicleId) {
@@ -40,8 +36,12 @@ public class VehicleManager {
 		return null;
 	}
 
-	public int getFleetSize() {
-		return vehicles.size();
+	public void addVehicle(Vehicle vehicle) {
+		vehicles.add(vehicle);
+	}
+
+	public boolean removeVehicleById(int vehicleId) {
+		return vehicles.removeIf(vehicle -> vehicle.getVehicleId() == vehicleId);
 	}
 
 }
