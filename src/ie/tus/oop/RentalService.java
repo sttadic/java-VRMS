@@ -17,7 +17,7 @@ public class RentalService {
 	}
 
 	public void startRental(String customerName) {
-		int vehicleId = inputHandler.readInt("\nEnter vehicle ID to rent: ");
+		int vehicleId = inputHandler.readInt("\nEnter vehicle ID to rent > ");
 		Vehicle vehicleToRent = null;
 
 		try {
@@ -38,7 +38,7 @@ public class RentalService {
 	}
 
 	public RentalReceipt endRental() {
-		int vehicleId = inputHandler.readInt("\nEnter vehicle ID to return: ");
+		int vehicleId = inputHandler.readInt("\nEnter vehicle ID to return > ");
 		Vehicle vehicleToReturn = null;
 
 		try {

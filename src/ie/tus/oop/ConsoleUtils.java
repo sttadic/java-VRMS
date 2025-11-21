@@ -10,6 +10,7 @@ public class ConsoleUtils {
 	public static final Object[] VEHICLE_HEADER = { "ID", "TYPE", "MODEL", "MAKE", "COLOUR", "FUEL", "PRICE/DAY",
 			"AVAILABILITY", "DETAILS" };
 	public static final Object[] RENTAL_HEADER = { "CUSTOMER", "VEH_ID", "VEHICLE", "RENT DATE" };
+	public static final String QUIT_COMMAND = ":q";
 
 	static void waitForEnter(Scanner scan) {
 		System.out.println("\nPress Enter to return to menu...");

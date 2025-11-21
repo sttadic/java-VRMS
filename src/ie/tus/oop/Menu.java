@@ -78,54 +78,61 @@ public class Menu {
 
 	private void addNewVehicle() {
 		ConsoleUtils.clearScreen();
-
-		out.println("(1) Car");
-		out.println("(2) Van");
-		out.println("(3) Bike");
-		int typeChoice = inputHandler.readInt("\nSelect vehicle type to add > ");
-
-		String make = inputHandler.readString("Enter Make: ");
-		String model = inputHandler.readString("Enter Model: ");
-		String colour = inputHandler.readString("Enter Colour: ");
-		double dailyRate = inputHandler.readDouble("Enter Daily Rate: ");
-		out.println("\n(1) Petrol");
-		out.println("(2) Diesel");
-		out.println("(3) Electric");
-		out.println("(4) Hybrid");
-		out.println("(5) None");
-		FuelType fuelType;
-		while (true) {
-			try {
-				int fuelChoice = inputHandler.readInt("Select Fuel Type > ");
-				fuelType = FuelType.values()[fuelChoice - 1];
-				break;
-			} catch (ArrayIndexOutOfBoundsException e) {
-				out.println("Invalid value selected. Please enter one of the expected values.");
+		try {
+			out.println("(1) Car");
+			out.println("(2) Van");
+			out.println("(3) Bike");
+			VehicleType vehicleType;
+			while (true) {
+				try {
+					int typeChoice = inputHandler.readInt("\nSelect vehicle type to add > ");
+					vehicleType = VehicleType.values()[typeChoice - 1];
+					break;
+				} catch (ArrayIndexOutOfBoundsException e) {
+					out.println("Invalid value selected. Please enter one of the expected values.");
+				}
 			}
-		}
 
-		Vehicle newVehicle = switch (typeChoice) {
-		case 1 -> {
-			boolean hasAirConditioning = inputHandler.readBoolean("Has Air Conditioning? (t)rue/(f)alse: ");
-			boolean hasNavigation = inputHandler.readBoolean("Has Navigation? (t)rue/(f)alse: ");
-			yield new Car(make, model, colour, fuelType, dailyRate, hasAirConditioning, hasNavigation);
-		}
-		case 2 -> {
-			double cargoCapacity = inputHandler.readDouble("Enter Cargo Capacity: ");
-			yield new Van(make, model, colour, fuelType, dailyRate, cargoCapacity);
-		}
-		case 3 -> {
-			int wheelSize = inputHandler.readInt("Enter Wheel Size: ");
-			yield new Bike(make, model, colour, fuelType, dailyRate, wheelSize);
-		}
-		default -> null;
-		};
+			String make = inputHandler.readString("Enter Make > ");
+			String model = inputHandler.readString("Enter Model > ");
+			String colour = inputHandler.readString("Enter Colour > ");
+			double dailyRate = inputHandler.readDouble("Enter Daily Rate > ");
+			out.println("\n(1) Petrol");
+			out.println("(2) Diesel");
+			out.println("(3) Electric");
+			out.println("(4) Hybrid");
+			out.println("(5) None");
+			FuelType fuelType;
+			while (true) {
+				try {
+					int fuelChoice = inputHandler.readInt("Select Fuel Type > ");
+					fuelType = FuelType.values()[fuelChoice - 1];
+					break;
+				} catch (ArrayIndexOutOfBoundsException e) {
+					out.println("Invalid value selected. Please enter one of the expected values.");
+				}
+			}
 
-		if (newVehicle != null) {
+			Vehicle newVehicle = switch (vehicleType) {
+			case CAR -> {
+				boolean hasAirConditioning = inputHandler.readBoolean("Has Air Conditioning? (t)rue/(f)alse > ");
+				boolean hasNavigation = inputHandler.readBoolean("Has Navigation? (t)rue/(f)alse > ");
+				yield new Car(make, model, colour, fuelType, dailyRate, hasAirConditioning, hasNavigation);
+			}
+			case VAN -> {
+				double cargoCapacity = inputHandler.readDouble("Enter Cargo Capacity > ");
+				yield new Van(make, model, colour, fuelType, dailyRate, cargoCapacity);
+			}
+			case BIKE -> {
+				int wheelSize = inputHandler.readInt("Enter Wheel Size > ");
+				yield new Bike(make, model, colour, fuelType, dailyRate, wheelSize);
+			}
+			};
+
 			vehicleManager.addVehicles(newVehicle);
 			out.println("\nVehicle added successfully.");
-		} else {
-			out.println("\nSomething went wrong. Please try again.");
+
+		} catch (OperationCancelledException e) {
 			return;
 		}
 
@@ -134,11 +141,16 @@ public class Menu {
 
 	private void removeVehicle() {
 		ConsoleUtils.clearScreen();
-
 		displayVehicleInventory();
-		int vehicleId = inputHandler.readInt("\nEnter ID of the vehicle you want to remove from fleet: ");
-		var removed = vehicleManager.removeVehicleById(vehicleId);
 
+		int vehicleId;
+		try {
+			vehicleId = inputHandler.readInt("\nEnter ID of the vehicle you want to remove from fleet > ");
+		} catch (OperationCancelledException e) {
+			return;
+		}
+
+		var removed = vehicleManager.removeVehicleById(vehicleId);
 		if (removed) {
 			out.println("\nVehicle with ID " + vehicleId + " was successfully removed.");
 		} else {
@@ -150,55 +162,69 @@ public class Menu {
 
 	private void updateRentalPrice() {
 		ConsoleUtils.clearScreen();
-
 		displayVehicleInventory();
-		int vehicleId = inputHandler.readInt("\nEnter the ID of the vehicle to update: ");
-		Vehicle vehicleToUpdate = vehicleManager.getVehicleById(vehicleId);
 
-		if (vehicleToUpdate == null) {
-			out.println("Vehicle with ID " + vehicleId + " not found.");
-			ConsoleUtils.waitForEnter(scan);
+		try {
+			int vehicleId = inputHandler.readInt("\nEnter the ID of the vehicle to update > ");
+			Vehicle vehicleToUpdate = vehicleManager.getVehicleById(vehicleId);
+
+			if (vehicleToUpdate == null) {
+				out.println("Vehicle with ID " + vehicleId + " not found.");
+				ConsoleUtils.waitForEnter(scan);
+				return;
+			}
+
+			out.println("Current vehicle details: " + vehicleId + ". " + vehicleToUpdate.getMake() + " "
+					+ vehicleToUpdate.getModel() + " - €" + String.format("%.2f", vehicleToUpdate.getDailyRate()));
+
+			double newRate = inputHandler.readDouble("Enter new Daily Rate: ");
+
+			vehicleToUpdate.setDailyRate(newRate);
+			out.println("\nPrice updated.");
+		} catch (OperationCancelledException e) {
 			return;
 		}
 
-		out.println("Current vehicle details: " + vehicleId + ". " + vehicleToUpdate.getMake() + " "
-				+ vehicleToUpdate.getModel() + " - €" + String.format("%.2f", vehicleToUpdate.getDailyRate()));
-
-		double newRate = inputHandler.readDouble("Enter new Daily Rate: ");
-
-		vehicleToUpdate.setDailyRate(newRate);
-		out.println("\nPrice updated.");
 		ConsoleUtils.waitForEnter(scan);
 	}
 
 	private void handleNewRental() {
 		ConsoleUtils.clearScreen();
 
-		String customerName = inputHandler.readString("Customer name: ");
-		displayVehicleInventory();
+		try {
+			String customerName = inputHandler.readString("Customer name > ");
+			displayVehicleInventory();
 
-		rentalService.startRental(customerName);
+			rentalService.startRental(customerName);
+		} catch (OperationCancelledException e) {
+			return;
+		}
+
 		ConsoleUtils.waitForEnter(scan);
 	}
 
 	private void handleVehicleReturn() {
 		ConsoleUtils.clearScreen();
 
-		var activeRentals = rentalService.getActiveRentals();
+		try {
+			var activeRentals = rentalService.getActiveRentals();
 
-		out.printf(ConsoleUtils.RENTAL_HEADER_FORMAT, ConsoleUtils.RENTAL_HEADER);
-		out.printf("----------------------------------------------------------------%n");
+			out.printf(ConsoleUtils.RENTAL_HEADER_FORMAT, ConsoleUtils.RENTAL_HEADER);
+			out.printf("----------------------------------------------------------------%n");
 
-		for (RentalTransaction rental : activeRentals) {
-			out.printf(ConsoleUtils.RENTAL_ROW_FORMAT, rental.customerName(), rental.vehicleID(),
-					rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
-		}
+			for (RentalTransaction rental : activeRentals) {
+				out.printf(ConsoleUtils.RENTAL_ROW_FORMAT, rental.customerName(), rental.vehicleID(),
+						rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
+			}
 
-		RentalReceipt receipt = rentalService.endRental();
+			RentalReceipt receipt = rentalService.endRental();
 
-		if (receipt != null) {
-			out.println("\n- Vehicle Returned -");
-			out.println(receipt.toString());
+			if (receipt != null) {
+				out.println("\n- Vehicle Returned -");
+				out.println(receipt.toString());
+			}
+		} catch (OperationCancelledException e) {
+			return;
 		}
 
 		ConsoleUtils.waitForEnter(scan);
