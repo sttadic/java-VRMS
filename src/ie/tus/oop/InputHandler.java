@@ -4,19 +4,44 @@ import static java.lang.System.out;
 
 import java.util.Scanner;
 
+/**
+ * Handles user input with validation and support for operation cancellation.
+ * Provides methods for reading different data types from the console.
+ *
+ * @author Stjepan Tadic
+ */
 public class InputHandler {
 	private final Scanner scan;
 
+	/**
+	 * Constructs a new InputHandler with the specified scanner.
+	 *
+	 * @param scan the Scanner to use for reading input
+	 */
 	public InputHandler(Scanner scan) {
 		this.scan = scan;
 	}
 
+	/**
+	 * Checks if the user entered the quit command and throws an exception if so.
+	 *
+	 * @param input the user input to check
+	 * @throws OperationCancelledException if the input is the quit command
+	 */
 	private void checkForQuit(String input) {
 		if (input.equalsIgnoreCase(ConsoleUtils.QUIT_COMMAND)) {
 			throw new OperationCancelledException("Operation cancelled by user.");
 		}
 	}
 
+	/**
+	 * Reads an integer from the user with validation. Repeatedly prompts until a
+	 * valid integer is entered.
+	 *
+	 * @param prompt the prompt message to display
+	 * @return the integer entered by the user
+	 * @throws OperationCancelledException if the user enters the quit command
+	 */
 	public int readInt(String prompt) {
 		while (true) {
 			out.print(ConsoleUtils.GREEN + prompt + ConsoleUtils.RESET);
@@ -30,6 +55,14 @@ public class InputHandler {
 		}
 	}
 
+	/**
+	 * Reads a double from the user with validation. Repeatedly prompts until a
+	 * valid number is entered.
+	 *
+	 * @param prompt the prompt message to display
+	 * @return the double entered by the user
+	 * @throws OperationCancelledException if the user enters the quit command
+	 */
 	public double readDouble(String prompt) {
 		while (true) {
 			out.print(ConsoleUtils.GREEN + prompt + ConsoleUtils.RESET);
@@ -43,6 +76,14 @@ public class InputHandler {
 		}
 	}
 
+	/**
+	 * Reads a non-empty string from the user. Repeatedly prompts until a non-empty
+	 * string is entered.
+	 *
+	 * @param prompt the prompt message to display
+	 * @return the string entered by the user
+	 * @throws OperationCancelledException if the user enters the quit command
+	 */
 	public String readString(String prompt) {
 		while (true) {
 			out.print(ConsoleUtils.GREEN + prompt + ConsoleUtils.RESET);
@@ -55,6 +96,13 @@ public class InputHandler {
 		}
 	}
 
+	/**
+	 * Reads a boolean value from the user. Accepts 't' for true and 'f' for false.
+	 *
+	 * @param prompt the prompt message to display
+	 * @return the boolean value entered by the user
+	 * @throws OperationCancelledException if the user enters the quit command
+	 */
 	public boolean readBoolean(String prompt) {
 		while (true) {
 			out.print(ConsoleUtils.GREEN + prompt + ConsoleUtils.RESET);

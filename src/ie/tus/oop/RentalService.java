@@ -5,17 +5,35 @@ import static java.lang.System.out;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
+/**
+ * Manages vehicle rental transactions including starting and ending rentals.
+ * Applies discounts for electric vehicles and handles rental receipts.
+ *
+ * @author Stjepan Tadic
+ */
 public class RentalService {
 	private ArrayList<RentalTransaction> transactions;
 	private VehicleManager vehicleManager;
 	private final InputHandler inputHandler;
 
+	/**
+	 * Constructs a new RentalService with the specified vehicle manager and input
+	 * handler.
+	 *
+	 * @param vehicleManager the vehicle manager to use
+	 * @param inputHandler   the input handler for user interactions
+	 */
 	public RentalService(VehicleManager vehicleManager, InputHandler inputHandler) {
 		this.vehicleManager = vehicleManager;
 		this.inputHandler = inputHandler;
 		this.transactions = new ArrayList<>();
 	}
 
+	/**
+	 * Starts a new rental transaction for the specified customer.
+	 *
+	 * @param customerName the name of the customer renting the vehicle
+	 */
 	public void startRental(String customerName) {
 		int vehicleId = inputHandler.readInt("\nEnter vehicle ID to rent > ");
 		Vehicle vehicleToRent = null;
@@ -37,6 +55,13 @@ public class RentalService {
 				+ customerName + ".");
 	}
 
+	/**
+	 * Ends a rental transaction and generates a receipt. Applies discounts: 15% for
+	 * electric cars, 10% for other electric vehicles.
+	 *
+	 * @return a RentalReceipt containing transaction details, or null if the
+	 *         transaction failed
+	 */
 	public RentalReceipt endRental() {
 		int vehicleId = inputHandler.readInt("\nEnter vehicle ID to return > ");
 		Vehicle vehicleToReturn = null;
@@ -80,6 +105,11 @@ public class RentalService {
 				transaction.rentalStartDate(), endDate, totalCost);
 	}
 
+	/**
+	 * Gets a copy of all active rental transactions.
+	 *
+	 * @return a list of active rental transactions
+	 */
 	public ArrayList<RentalTransaction> getActiveRentals() {
 		return new ArrayList<>(transactions);
 	}

@@ -4,6 +4,12 @@ import static java.lang.System.out;
 
 import java.util.Scanner;
 
+/**
+ * Main menu controller for the Vehicle Rental Management System. Handles user
+ * interaction and coordinates between different system components.
+ *
+ * @author Stjepan Tadic
+ */
 public class Menu {
 	private boolean keepRunning = true;
 	private final Scanner scan = new Scanner(System.in);
@@ -11,12 +17,19 @@ public class Menu {
 	private final InputHandler inputHandler;
 	private final RentalService rentalService;
 
+	/**
+	 * Constructs a new Menu and initializes all system components.
+	 */
 	public Menu() {
 		vehicleManager = new VehicleManager();
 		inputHandler = new InputHandler(scan);
 		rentalService = new RentalService(vehicleManager, inputHandler);
 	}
 
+	/**
+	 * Runs the main application loop. Displays the menu, handles user choices, and
+	 * manages exceptions.
+	 */
 	public void runApplication() {
 		while (keepRunning) {
 			ConsoleUtils.clearScreen();
@@ -31,6 +44,11 @@ public class Menu {
 		scan.close();
 	}
 
+	/**
+	 * Handles the user's menu choice and delegates to appropriate methods.
+	 *
+	 * @throws InvalidChoiceException if the user enters an invalid choice
+	 */
 	private void handleChoice() {
 		int choice = inputHandler.readInt(ConsoleUtils.GREEN + "\nSelect Option (1-8) > " + ConsoleUtils.RESET);
 
@@ -53,6 +71,9 @@ public class Menu {
 		}
 	}
 
+	/**
+	 * Displays the complete vehicle inventory including all vehicle details.
+	 */
 	private void displayVehicleInventory() {
 		var vehicles = vehicleManager.getAllVehicles();
 		if (vehicles.isEmpty()) {
@@ -76,6 +97,10 @@ public class Menu {
 		out.println("Available for rental -----> " + vehicleManager.getAvailableVehicleCount());
 	}
 
+	/**
+	 * Handles the process of adding a new vehicle to the fleet. Prompts for all
+	 * necessary vehicle details and creates the appropriate vehicle type.
+	 */
 	private void addNewVehicle() {
 		ConsoleUtils.clearScreen();
 		out.println("ADD NEW VEHICLE TO FLEET (Enter :q to cancel)\n");
@@ -100,6 +125,11 @@ public class Menu {
 		ConsoleUtils.waitForEnter(scan);
 	}
 
+	/**
+	 * Prompts the user to select a vehicle type.
+	 *
+	 * @return the selected VehicleType
+	 */
 	private VehicleType selectVehicleType() {
 		out.println("(1) Car");
 		out.println("(2) Van");
@@ -116,6 +146,11 @@ public class Menu {
 		}
 	}
 
+	/**
+	 * Prompts the user to select a fuel type.
+	 *
+	 * @return the selected FuelType
+	 */
 	private FuelType selectFuelType() {
 		out.println("\n(1) Petrol");
 		out.println("(2) Diesel");
@@ -134,6 +169,18 @@ public class Menu {
 		}
 	}
 
+	/**
+	 * Creates a vehicle of the specified type with the given details. Prompts for
+	 * type-specific attributes.
+	 *
+	 * @param type      the type of vehicle to create
+	 * @param make      the manufacturer
+	 * @param model     the model name
+	 * @param colour    the colour
+	 * @param fuelType  the fuel type
+	 * @param dailyRate the daily rental rate
+	 * @return the created Vehicle
+	 */
 	private Vehicle createVehicle(VehicleType type, String make, String model, String colour, FuelType fuelType,
 			double dailyRate) {
 		return switch (type) {
@@ -153,6 +200,9 @@ public class Menu {
 		};
 	}
 
+	/**
+	 * Handles the process of removing a vehicle from the fleet.
+	 */
 	private void removeVehicle() {
 		ConsoleUtils.clearScreen();
 		out.println("REMOVE VEHICLE FROM FLEET (Enter :q to cancel)\n");
@@ -175,6 +225,9 @@ public class Menu {
 		ConsoleUtils.waitForEnter(scan);
 	}
 
+	/**
+	 * Handles the process of updating a vehicle's rental price.
+	 */
 	private void updateRentalPrice() {
 		ConsoleUtils.clearScreen();
 		out.println("UPDATE VEHICLE RENTAL PRICE (Enter :q to cancel)\n");
@@ -204,6 +257,9 @@ public class Menu {
 		ConsoleUtils.waitForEnter(scan);
 	}
 
+	/**
+	 * Handles the process of creating a new rental transaction.
+	 */
 	private void handleNewRental() {
 		ConsoleUtils.clearScreen();
 		out.println("PROCESS NEW RENTAL (Enter :q to cancel)\n");
@@ -220,6 +276,9 @@ public class Menu {
 		ConsoleUtils.waitForEnter(scan);
 	}
 
+	/**
+	 * Handles the process of returning a rented vehicle and generating a receipt.
+	 */
 	private void handleVehicleReturn() {
 		ConsoleUtils.clearScreen();
 		out.println("PROCESS VEHICLE RETURN (Enter :q to cancel)\n\n");
@@ -238,6 +297,9 @@ public class Menu {
 		ConsoleUtils.waitForEnter(scan);
 	}
 
+	/**
+	 * Displays all active rental transactions.
+	 */
 	private void viewRentals() {
 		ConsoleUtils.clearScreen();
 		out.println("ACTIVE RENTAL RECORDS\n\n");
@@ -245,6 +307,9 @@ public class Menu {
 		ConsoleUtils.waitForEnter(scan);
 	}
 
+	/**
+	 * Displays the main menu options.
+	 */
 	private void showOptions() {
 		out.println("************************************************************");
 		out.println("*                                                          *");
