@@ -36,6 +36,8 @@ public class Menu {
 
 		switch (choice) {
 		case 1 -> {
+			ConsoleUtils.clearScreen();
+			out.println("VEHICLE INVENTORY\n");
 			displayVehicleInventory();
 			ConsoleUtils.waitForEnter(scan);
 		}
@@ -52,9 +54,7 @@ public class Menu {
 	}
 
 	private void displayVehicleInventory() {
-		ConsoleUtils.clearScreen();
 		var vehicles = vehicleManager.getAllVehicles();
-
 		if (vehicles.isEmpty()) {
 			out.println("No vehicles in inventory");
 			return;
@@ -78,6 +78,8 @@ public class Menu {
 
 	private void addNewVehicle() {
 		ConsoleUtils.clearScreen();
+		out.println("ADD NEW VEHICLE TO FLEET (Enter :q to cancel)\n\n");
+
 		try {
 			out.println("(1) Car");
 			out.println("(2) Van");
@@ -85,7 +87,7 @@ public class Menu {
 			VehicleType vehicleType;
 			while (true) {
 				try {
-					int typeChoice = inputHandler.readInt("\nSelect vehicle type to add > ");
+					int typeChoice = inputHandler.readInt("Select vehicle type to add > ");
 					vehicleType = VehicleType.values()[typeChoice - 1];
 					break;
 				} catch (ArrayIndexOutOfBoundsException e) {
@@ -141,6 +143,7 @@ public class Menu {
 
 	private void removeVehicle() {
 		ConsoleUtils.clearScreen();
+		out.println("REMOVE VEHICLE FROM FLEET (Enter :q to cancel)\n");
 		displayVehicleInventory();
 
 		int vehicleId;
@@ -162,6 +165,7 @@ public class Menu {
 
 	private void updateRentalPrice() {
 		ConsoleUtils.clearScreen();
+		out.println("UPDATE VEHICLE RENTAL PRICE (Enter :q to cancel)\n");
 		displayVehicleInventory();
 
 		try {
@@ -190,6 +194,7 @@ public class Menu {
 
 	private void handleNewRental() {
 		ConsoleUtils.clearScreen();
+		out.println("PROCESS NEW RENTAL (Enter :q to cancel)\n");
 
 		try {
 			String customerName = inputHandler.readString("Customer name > ");
@@ -205,6 +210,7 @@ public class Menu {
 
 	private void handleVehicleReturn() {
 		ConsoleUtils.clearScreen();
+		out.println("PROCESS VEHICLE RETURN (Enter :q to cancel)\n\n");
 
 		try {
 			var activeRentals = rentalService.getActiveRentals();
@@ -232,6 +238,8 @@ public class Menu {
 
 	private void viewRentals() {
 		ConsoleUtils.clearScreen();
+		out.println("ACTIVE RENTAL RECORDS\n\n");
+
 		var activeRentals = rentalService.getActiveRentals();
 
 		out.printf(ConsoleUtils.RENTAL_HEADER_FORMAT, ConsoleUtils.RENTAL_HEADER);
