@@ -24,6 +24,11 @@ public class VehicleManager {
 		return new ArrayList<>(vehicles);
 	}
 
+	public long getAvailableVehicleCount() {
+		// Stream with method reference
+		return vehicles.stream().filter(Vehicle::isAvailable).count();
+	}
+
 	public int getFleetSize() {
 		return vehicles.size();
 	}

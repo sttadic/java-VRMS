@@ -60,20 +60,20 @@ public class Menu {
 			return;
 		}
 		out.println();
-		out.printf("%3s | %-5s | %-15s | %-17s | %-8s | %-9s | %-4s | %-10s | %s%n", "ID", "TYPE", "MODEL", "MAKE",
-				"COLOUR", "FUEL", "PRICE/DAY", "AVAILABILITY", "DETAILS");
+		out.printf(ConsoleUtils.VEHICLE_HEADER_FORMAT, ConsoleUtils.VEHICLE_HEADER);
 		out.printf(
 				"----------------------------------------------------------------------------------------------------------------------------------%n");
 
 		for (Vehicle vehicle : vehicles) {
 			out.printf("%2d  | %s", vehicle.getVehicleId(), vehicle.toString());
-			// Pattern matching
-			String specificDetails = vehicle.getSpecs();
-			if (!specificDetails.isEmpty()) {
-				out.println(specificDetails);
+
+			String additionalSpecs = vehicle.getSpecs();
+			if (!additionalSpecs.isEmpty()) {
+				out.println(additionalSpecs);
 			}
 		}
-		out.println("\nTotal number of vehicles: " + vehicleManager.getFleetSize());
+		out.println("\nTotal count of vehicles --> " + vehicleManager.getFleetSize());
+		out.println("Available for rental -----> " + vehicleManager.getAvailableVehicleCount());
 	}
 
 	private void addNewVehicle() {
@@ -175,15 +175,7 @@ public class Menu {
 		ConsoleUtils.clearScreen();
 
 		String customerName = inputHandler.readString("Customer name: ");
-		out.println();
-		out.printf("%3s | %-5s | %-15s | %-17s | %-8s | %-9s | %-4s | %s%n", "ID", "TYPE", "MODEL", "MAKE", "COLOUR",
-				"FUEL", "PRICE/DAY", "AVAILABILITY");
-		out.printf(
-				"----------------------------------------------------------------------------------------------------%n");
-
-		var vehicles = vehicleManager.getAllVehicles();
-		vehicles.stream().filter(Vehicle::isAvailable)
-				.forEach(vehicle -> out.printf("%2d  | %s%n", vehicle.getVehicleId(), vehicle.toString()));
+		displayVehicleInventory();
 
 		rentalService.startRental(customerName);
 		ConsoleUtils.waitForEnter(scan);
@@ -194,11 +186,11 @@ public class Menu {
 
 		var activeRentals = rentalService.getActiveRentals();
 
-		out.printf("%-18s | %-3s | %-20s | %s%n", "CUSTOMER", "VEH_ID", "VEHICLE", "RENT DATE");
+		out.printf(ConsoleUtils.RENTAL_HEADER_FORMAT, ConsoleUtils.RENTAL_HEADER);
 		out.printf("----------------------------------------------------------------%n");
 
 		for (RentalTransaction rental : activeRentals) {
-			out.printf("%-18.18s | %-6s | %-20.20s | %s%n", rental.customerName(), rental.vehicleID(),
+			out.printf(ConsoleUtils.RENTAL_ROW_FORMAT, rental.customerName(), rental.vehicleID(),
 					rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
 		}
 
@@ -216,10 +208,10 @@ public class Menu {
 		ConsoleUtils.clearScreen();
 		var activeRentals = rentalService.getActiveRentals();
 
-		out.printf("%-18s | %-3s | %-20s | %s%n", "CUSTOMER", "VEH_ID", "VEHICLE", "RENT DATE");
+		out.printf(ConsoleUtils.RENTAL_HEADER_FORMAT, ConsoleUtils.RENTAL_HEADER);
 		out.printf("----------------------------------------------------------------%n");
 		for (RentalTransaction rental : activeRentals) {
-			out.printf("%-18.18s | %-6s | %-20.20s | %s%n", rental.customerName(), rental.vehicleID(),
+			out.printf(ConsoleUtils.RENTAL_ROW_FORMAT, rental.customerName(), rental.vehicleID(),
 					rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
 		}
 

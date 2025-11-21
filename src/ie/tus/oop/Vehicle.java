@@ -78,8 +78,8 @@ public abstract sealed class Vehicle implements Rentable permits Car, Van, Bike 
 
 	@Override
 	public String toString() {
-		return String.format("%-5s | %-15s | %-17s | %-8s | %-9s | €%-8.2f | %s", vehicleType, make, model, colour,
-				fuelType, dailyRate, getStatus());
+		return String.format(ConsoleUtils.VEHICLE_ROW_FORMAT, vehicleType, make, model, colour, fuelType, dailyRate,
+				getStatus());
 	}
 
 }
