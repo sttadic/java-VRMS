@@ -33,7 +33,7 @@ public class RentalService {
 		transactions.add(new RentalTransaction(customerName, vehicleId, vehicleToRent.getMake(),
 				vehicleToRent.getModel(), LocalDate.now()));
 		vehicleToRent.setAvailable(false);
-		out.println("\nVehicle " + vehicleToRent.getMake() + " " + vehicleToRent.getModel() + " succesfully rented to "
+		out.println("\nVehicle " + vehicleToRent.getMake() + " " + vehicleToRent.getModel() + " rented succesfully to "
 				+ customerName + ".");
 	}
 
@@ -66,10 +66,10 @@ public class RentalService {
 		// Pattern matching for instanceof
 		double effectiveRate = vehicleToReturn.getDailyRate();
 		if (vehicleToReturn instanceof Car c && c.getFuelType() == FuelType.ELECTRIC) {
-			out.println("Applying 15% discount for electric car!");
+			out.println("Applying 15% electric car discount!");
 			effectiveRate *= .85;
 		} else if (vehicleToReturn.getFuelType() == FuelType.ELECTRIC) {
-			out.println("Applying 10% discount for electric vehicle!");
+			out.println("Applying 10% electric vehicle discount!");
 			effectiveRate *= .90;
 		}
 

@@ -2,7 +2,7 @@ package ie.tus.oop;
 
 import java.util.Scanner;
 
-public class RentalUtils {
+public class ConsoleUtils {
 
 	public static void waitForEnter(Scanner scan) {
 		System.out.println("\nPress Enter to return to main menu...");

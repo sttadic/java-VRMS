@@ -19,13 +19,13 @@ public class Menu {
 
 	public void runApplication() {
 		while (keepRunning) {
-			RentalUtils.clearScreen();
+			ConsoleUtils.clearScreen();
 			showOptions();
 			try {
 				handleChoice();
 			} catch (InvalidChoiceException e) {
 				out.println(e.getMessage());
-				RentalUtils.waitForEnter(scan);
+				ConsoleUtils.waitForEnter(scan);
 			}
 		}
 		scan.close();
@@ -35,12 +35,15 @@ public class Menu {
 		int choice = inputHandler.readInt("\nSelect Option (1-8) > ");
 
 		switch (choice) {
-		case 1 -> vehicleInventory(true);
+		case 1 -> {
+			displayVehicleInventory();
+			ConsoleUtils.waitForEnter(scan);
+		}
 		case 2 -> addNewVehicle();
 		case 3 -> removeVehicle();
 		case 4 -> updateRentalPrice();
-		case 5 -> processRental();
-		case 6 -> processReturn();
+		case 5 -> handleNewRental();
+		case 6 -> handleVehicleReturn();
 		case 7 -> viewRentals();
 		case 8 -> keepRunning = false;
 		default -> throw new InvalidChoiceException("\nInvalid Selection! Please choose an option from 1 to 8.");
@@ -48,8 +51,8 @@ public class Menu {
 		}
 	}
 
-	private void vehicleInventory(boolean calledFromMenu) {
-		RentalUtils.clearScreen();
+	private void displayVehicleInventory() {
+		ConsoleUtils.clearScreen();
 		var vehicles = vehicleManager.getAllVehicles();
 
 		if (vehicles.isEmpty()) {
@@ -70,16 +73,11 @@ public class Menu {
 				out.println(specificDetails);
 			}
 		}
-
 		out.println("\nTotal number of vehicles: " + vehicleManager.getFleetSize());
-
-		if (calledFromMenu) {
-			RentalUtils.waitForEnter(scan);
-		}
 	}
 
 	private void addNewVehicle() {
-		RentalUtils.clearScreen();
+		ConsoleUtils.clearScreen();
 
 		out.println("(1) Car");
 		out.println("(2) Van");
@@ -108,17 +106,17 @@ public class Menu {
 
 		Vehicle newVehicle = switch (typeChoice) {
 		case 1 -> {
-			boolean ac = inputHandler.readBoolean("Has Air Conditioning? (t)rue/(f)alse: ");
-			boolean nav = inputHandler.readBoolean("Has Navigation? (t)rue/(f)alse: ");
-			yield new Car(make, model, colour, fuelType, dailyRate, ac, nav);
+			boolean hasAirConditioning = inputHandler.readBoolean("Has Air Conditioning? (t)rue/(f)alse: ");
+			boolean hasNavigation = inputHandler.readBoolean("Has Navigation? (t)rue/(f)alse: ");
+			yield new Car(make, model, colour, fuelType, dailyRate, hasAirConditioning, hasNavigation);
 		}
 		case 2 -> {
 			double cargoCapacity = inputHandler.readDouble("Enter Cargo Capacity: ");
 			yield new Van(make, model, colour, fuelType, dailyRate, cargoCapacity);
 		}
 		case 3 -> {
-			int engineSize = inputHandler.readInt("Enter Wheel Size: ");
-			yield new Bike(make, model, colour, fuelType, dailyRate, engineSize);
+			int wheelSize = inputHandler.readInt("Enter Wheel Size: ");
+			yield new Bike(make, model, colour, fuelType, dailyRate, wheelSize);
 		}
 		default -> null;
 		};
@@ -131,35 +129,35 @@ public class Menu {
 			return;
 		}
 
-		RentalUtils.waitForEnter(scan);
+		ConsoleUtils.waitForEnter(scan);
 	}
 
 	private void removeVehicle() {
-		RentalUtils.clearScreen();
+		ConsoleUtils.clearScreen();
 
-		vehicleInventory(false);
+		displayVehicleInventory();
 		int vehicleId = inputHandler.readInt("\nEnter ID of the vehicle you want to remove from fleet: ");
 		var removed = vehicleManager.removeVehicleById(vehicleId);
 
 		if (removed) {
-			out.println("\nVehicle succesfully removed.");
+			out.println("\nVehicle with ID " + vehicleId + " was succesfully removed.");
 		} else {
-			out.println("\nVehicle with id=" + vehicleId + " does not exist!");
+			out.println("\nVehicle with ID " + vehicleId + " does not exist!");
 		}
 
-		RentalUtils.waitForEnter(scan);
+		ConsoleUtils.waitForEnter(scan);
 	}
 
 	private void updateRentalPrice() {
-		RentalUtils.clearScreen();
+		ConsoleUtils.clearScreen();
 
-		vehicleInventory(false);
+		displayVehicleInventory();
 		int vehicleId = inputHandler.readInt("\nEnter the ID of the vehicle to update: ");
 		Vehicle vehicleToUpdate = vehicleManager.getVehicleById(vehicleId);
 
 		if (vehicleToUpdate == null) {
 			out.println("Vehicle with ID " + vehicleId + " not found.");
-			RentalUtils.waitForEnter(scan);
+			ConsoleUtils.waitForEnter(scan);
 			return;
 		}
 
@@ -170,11 +168,11 @@ public class Menu {
 
 		vehicleToUpdate.setDailyRate(newRate);
 		out.println("\nPrice updated.");
-		RentalUtils.waitForEnter(scan);
+		ConsoleUtils.waitForEnter(scan);
 	}
 
-	private void processRental() {
-		RentalUtils.clearScreen();
+	private void handleNewRental() {
+		ConsoleUtils.clearScreen();
 
 		String customerName = inputHandler.readString("Customer name: ");
 		out.println();
@@ -188,11 +186,11 @@ public class Menu {
 				.forEach(vehicle -> out.printf("%2d  | %s%n", vehicle.getVehicleId(), vehicle.toString()));
 
 		rentalService.startRental(customerName);
-		RentalUtils.waitForEnter(scan);
+		ConsoleUtils.waitForEnter(scan);
 	}
 
-	private void processReturn() {
-		RentalUtils.clearScreen();
+	private void handleVehicleReturn() {
+		ConsoleUtils.clearScreen();
 
 		var activeRentals = rentalService.getActiveRentals();
 
@@ -211,11 +209,11 @@ public class Menu {
 			out.println(receipt.toString());
 		}
 
-		RentalUtils.waitForEnter(scan);
+		ConsoleUtils.waitForEnter(scan);
 	}
 
 	private void viewRentals() {
-		RentalUtils.clearScreen();
+		ConsoleUtils.clearScreen();
 		var activeRentals = rentalService.getActiveRentals();
 
 		out.printf("%-18s | %-3s | %-20s | %s%n", "CUSTOMER", "VEH_ID", "VEHICLE", "RENT DATE");
@@ -225,7 +223,7 @@ public class Menu {
 					rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
 		}
 
-		RentalUtils.waitForEnter(scan);
+		ConsoleUtils.waitForEnter(scan);
 	}
 
 	private void showOptions() {
