@@ -14,6 +14,11 @@ public class ConsoleUtils {
 			"AVAILABILITY", "DETAILS" };
 	public static final Object[] RENTAL_HEADER = { "CUSTOMER", "VEH_ID", "VEHICLE", "RENT DATE" };
 	public static final String QUIT_COMMAND = ":q";
+	// ANSI Color Codes (doesn't work in older terminals)
+	// https://www.geeksforgeeks.org/java/how-to-print-colored-text-in-java-console/
+	public static final String GREEN = "\u001B[32m";
+	public static final String RED = "\u001B[31m";
+	public static final String RESET = "\u001B[0m";
 
 	public static void waitForEnter(Scanner scan) {
 		System.out.println("\nPress Enter to return to menu...");

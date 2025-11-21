@@ -32,7 +32,7 @@ public class Menu {
 	}
 
 	private void handleChoice() {
-		int choice = inputHandler.readInt("\nSelect Option (1-8) > ");
+		int choice = inputHandler.readInt(ConsoleUtils.GREEN + "\nSelect Option (1-8) > " + ConsoleUtils.RESET);
 
 		switch (choice) {
 		case 1 -> {
@@ -110,7 +110,8 @@ public class Menu {
 				int typeChoice = inputHandler.readInt("Select vehicle type to add > ");
 				return VehicleType.values()[typeChoice - 1];
 			} catch (ArrayIndexOutOfBoundsException e) {
-				out.println("Invalid value selected. Please enter one of the expected values.");
+				out.println(ConsoleUtils.RED + "Invalid value selected. Please enter one of the expected values."
+						+ ConsoleUtils.RESET);
 			}
 		}
 	}
@@ -127,7 +128,8 @@ public class Menu {
 				int fuelChoice = inputHandler.readInt("Select Fuel Type > ");
 				return FuelType.values()[fuelChoice - 1];
 			} catch (ArrayIndexOutOfBoundsException e) {
-				out.println("Invalid value selected. Please enter one of the expected values.");
+				out.println(ConsoleUtils.RED + "Invalid value selected. Please enter one of the expected values."
+						+ ConsoleUtils.RESET);
 			}
 		}
 	}

@@ -4,6 +4,6 @@ public class VehicleNotAvailableException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public VehicleNotAvailableException(String errorMessage) {
-		super(errorMessage);
+		super(ConsoleUtils.RED + errorMessage + ConsoleUtils.RESET);
 	}
 }
