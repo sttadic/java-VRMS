@@ -42,6 +42,27 @@ public interface Rentable {
 	}
 
 	/**
+	 * Formats the daily rental rate as a currency string. Default implementation
+	 * returns the rate formatted with euro symbol and 2 decimal places.
+	 *
+	 * @return the formatted daily rate as a currency string
+	 */
+	default String formatDailyRate() {
+		return formatCurrency(getDailyRate());
+	}
+
+	/**
+	 * Formats a monetary amount as a currency string with euro symbol and 2 decimal
+	 * places.
+	 *
+	 * @param amount the amount to format
+	 * @return the formatted currency string (e.g., "€50.00")
+	 */
+	private String formatCurrency(double amount) {
+		return String.format("€%.2f", amount);
+	}
+
+	/**
 	 * Calculates the total rental cost based on the daily rate and rental period.
 	 * If the rental period is less than 1 day, charges for 1 day.
 	 *

@@ -111,6 +111,7 @@ public class Menu {
 			String model = inputHandler.readString("Enter Model > ");
 			String colour = inputHandler.readString("Enter Colour > ");
 			double dailyRate = inputHandler.readDouble("Enter Daily Rate > ");
+			Vehicle.validateDailyRate(dailyRate);
 			FuelType fuelType = selectFuelType();
 
 			Vehicle newVehicle = createVehicle(vehicleType, make, model, colour, fuelType, dailyRate);
@@ -120,6 +121,8 @@ public class Menu {
 
 		} catch (OperationCancelledException e) {
 			return;
+		} catch (IllegalArgumentException e) {
+			out.println(e.getMessage());
 		}
 
 		ConsoleUtils.waitForEnter(scan);
@@ -244,14 +247,17 @@ public class Menu {
 			}
 
 			out.println("Current vehicle details: " + vehicleId + ". " + vehicleToUpdate.getMake() + " "
-					+ vehicleToUpdate.getModel() + " - €" + String.format("%.2f", vehicleToUpdate.getDailyRate()));
+					+ vehicleToUpdate.getModel() + " - " + vehicleToUpdate.formatDailyRate());
 
 			double newRate = inputHandler.readDouble("Enter new Daily Rate: ");
+			Vehicle.validateDailyRate(newRate);
 
 			vehicleToUpdate.setDailyRate(newRate);
 			out.println("\nPrice updated.");
 		} catch (OperationCancelledException e) {
 			return;
+		} catch (IllegalArgumentException e) {
+			out.println(e.getMessage());
 		}
 
 		ConsoleUtils.waitForEnter(scan);

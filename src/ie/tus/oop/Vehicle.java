@@ -136,7 +136,8 @@ public abstract sealed class Vehicle implements Rentable permits Car, Van, Bike 
 	 */
 	protected static void validateDailyRate(double dailyRate) {
 		if (dailyRate <= 0) {
-			throw new IllegalArgumentException("Daily rate must be a positive number");
+			throw new IllegalArgumentException(
+					ConsoleUtils.RED + "Daily rate must be a positive number." + ConsoleUtils.RESET);
 		}
 	}
 
