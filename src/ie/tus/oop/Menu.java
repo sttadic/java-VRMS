@@ -140,7 +140,7 @@ public class Menu {
 		var removed = vehicleManager.removeVehicleById(vehicleId);
 
 		if (removed) {
-			out.println("\nVehicle with ID " + vehicleId + " was succesfully removed.");
+			out.println("\nVehicle with ID " + vehicleId + " was successfully removed.");
 		} else {
 			out.println("\nVehicle with ID " + vehicleId + " does not exist!");
 		}

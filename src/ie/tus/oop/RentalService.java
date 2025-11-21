@@ -33,7 +33,7 @@ public class RentalService {
 		transactions.add(new RentalTransaction(customerName, vehicleId, vehicleToRent.getMake(),
 				vehicleToRent.getModel(), LocalDate.now()));
 		vehicleToRent.setAvailable(false);
-		out.println("\nVehicle " + vehicleToRent.getMake() + " " + vehicleToRent.getModel() + " rented succesfully to "
+		out.println("\nVehicle " + vehicleToRent.getMake() + " " + vehicleToRent.getModel() + " rented successfully to "
 				+ customerName + ".");
 	}
 

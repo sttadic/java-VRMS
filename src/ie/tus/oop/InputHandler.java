@@ -15,7 +15,7 @@ public class InputHandler {
 		while (true) {
 			out.print(prompt);
 			try {
-				return Integer.parseInt(scan.nextLine());
+				return Integer.parseInt(scan.nextLine().strip());
 			} catch (NumberFormatException e) {
 				out.println("Invalid input. Please eneter a whole number.");
 			}
@@ -26,7 +26,7 @@ public class InputHandler {
 		while (true) {
 			out.print(prompt);
 			try {
-				return Double.parseDouble(scan.nextLine());
+				return Double.parseDouble(scan.nextLine().strip());
 			} catch (NumberFormatException e) {
 				out.println("Invalid input. Please enter a number.");
 			}
@@ -48,7 +48,7 @@ public class InputHandler {
 		while (true) {
 			out.print(prompt);
 			try {
-				String input = scan.nextLine();
+				String input = scan.nextLine().strip();
 				return switch (input.toLowerCase()) {
 				case "t" -> true;
 				case "f" -> false;
