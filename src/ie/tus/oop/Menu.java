@@ -19,32 +19,36 @@ public class Menu {
 
 	public void runApplication() {
 		while (keepRunning) {
+			RentalUtils.clearScreen();
 			showOptions();
-			handleChoice();
+			try {
+				handleChoice();
+			} catch (InvalidChoiceException e) {
+				out.println(e.getMessage());
+				RentalUtils.waitForEnter(scan);
+			}
 		}
+		scan.close();
 	}
 
 	private void handleChoice() {
 		int choice = inputHandler.readInt("\nSelect Option (1-8) > ");
 
 		switch (choice) {
-		case 1 -> vehicleInventory();
+		case 1 -> vehicleInventory(true);
 		case 2 -> addNewVehicle();
-		case 3 -> updateRentalPrice();
-		case 4 -> removeVehicle();
+		case 3 -> removeVehicle();
+		case 4 -> updateRentalPrice();
 		case 5 -> processRental();
 		case 6 -> processReturn();
 		case 7 -> viewRentals();
-		case 8 -> {
-			scan.close();
-			keepRunning = false;
-		}
-		default -> out.println("\nInvalid Selection!");
+		case 8 -> keepRunning = false;
+		default -> throw new InvalidChoiceException("\nInvalid Selection! Please choose an option from 1 to 8.");
 
 		}
 	}
 
-	private void vehicleInventory() {
+	private void vehicleInventory(boolean calledFromMenu) {
 		RentalUtils.clearScreen();
 		var vehicles = vehicleManager.getAllVehicles();
 
@@ -69,7 +73,9 @@ public class Menu {
 
 		out.println("\nTotal number of vehicles: " + vehicleManager.getFleetSize());
 
-		RentalUtils.waitForEnter(scan);
+		if (calledFromMenu) {
+			RentalUtils.waitForEnter(scan);
+		}
 	}
 
 	private void addNewVehicle() {
@@ -128,10 +134,27 @@ public class Menu {
 		RentalUtils.waitForEnter(scan);
 	}
 
+	private void removeVehicle() {
+		RentalUtils.clearScreen();
+
+		vehicleInventory(false);
+		int vehicleId = inputHandler.readInt("\nEnter ID of the vehicle you want to remove from fleet: ");
+		var removed = vehicleManager.removeVehicleById(vehicleId);
+
+		if (removed) {
+			out.println("\nVehicle succesfully removed.");
+		} else {
+			out.println("\nVehicle with id=" + vehicleId + " does not exist!");
+		}
+
+		RentalUtils.waitForEnter(scan);
+	}
+
 	private void updateRentalPrice() {
 		RentalUtils.clearScreen();
 
-		int vehicleId = inputHandler.readInt("Enter the ID of the vehicle to update: ");
+		vehicleInventory(false);
+		int vehicleId = inputHandler.readInt("\nEnter the ID of the vehicle to update: ");
 		Vehicle vehicleToUpdate = vehicleManager.getVehicleById(vehicleId);
 
 		if (vehicleToUpdate == null) {
@@ -147,21 +170,6 @@ public class Menu {
 
 		vehicleToUpdate.setDailyRate(newRate);
 		out.println("\nPrice updated.");
-		RentalUtils.waitForEnter(scan);
-	}
-
-	private void removeVehicle() {
-		RentalUtils.clearScreen();
-
-		int vehicleId = inputHandler.readInt("Enter ID of the vehicle you want to remove from fleet: ");
-		var removed = vehicleManager.removeVehicleById(vehicleId);
-
-		if (removed) {
-			out.println("\nVehicle succesfully removed.");
-		} else {
-			out.println("\nVehicle with id=" + vehicleId + " does not exist!");
-		}
-
 		RentalUtils.waitForEnter(scan);
 	}
 
@@ -229,8 +237,8 @@ public class Menu {
 
 		out.println("(1) Display Vehicle Inventory");
 		out.println("(2) Add New Vehicle to Fleet");
-		out.println("(3) Update Rental Price");
-		out.println("(4) Remove Vehicle from Fleet");
+		out.println("(3) Remove Vehicle from Fleet");
+		out.println("(4) Update Rental Price");
 		out.println("(5) Process Vehicle Rental");
 		out.println("(6) Process Vehicle Return");
 		out.println("(7) View Active Rental Records");
