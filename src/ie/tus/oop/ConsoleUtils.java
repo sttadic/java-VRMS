@@ -1,5 +1,8 @@
 package ie.tus.oop;
 
+import static java.lang.System.out;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ConsoleUtils {
@@ -12,7 +15,7 @@ public class ConsoleUtils {
 	public static final Object[] RENTAL_HEADER = { "CUSTOMER", "VEH_ID", "VEHICLE", "RENT DATE" };
 	public static final String QUIT_COMMAND = ":q";
 
-	static void waitForEnter(Scanner scan) {
+	public static void waitForEnter(Scanner scan) {
 		System.out.println("\nPress Enter to return to menu...");
 		scan.nextLine();
 	}
@@ -21,5 +24,15 @@ public class ConsoleUtils {
 	public static void clearScreen() {
 		System.out.print("\033[H\033[2J");
 		System.out.flush();
+	}
+
+	static void displayActiveRentalsTable(ArrayList<RentalTransaction> rentals) {
+		out.printf(ConsoleUtils.RENTAL_HEADER_FORMAT, ConsoleUtils.RENTAL_HEADER);
+		out.printf("----------------------------------------------------------------%n");
+
+		for (RentalTransaction rental : rentals) {
+			out.printf(ConsoleUtils.RENTAL_ROW_FORMAT, rental.customerName(), rental.vehicleID(),
+					rental.vehicleMake() + " " + rental.vehicleModel(), rental.rentalStartDate());
+		}
 	}
 }
