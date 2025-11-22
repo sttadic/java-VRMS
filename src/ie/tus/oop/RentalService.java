@@ -33,6 +33,8 @@ public class RentalService {
 	 * Starts a new rental transaction for the specified customer.
 	 *
 	 * @param customerName the name of the customer renting the vehicle
+	 * @throws VehicleNotAvailableException if the vehicle is not found or not
+	 *                                      available for rental
 	 */
 	public void startRental(String customerName) {
 		int vehicleId = inputHandler.readInt("\nEnter vehicle ID to rent > ");
@@ -61,6 +63,8 @@ public class RentalService {
 	 *
 	 * @return a RentalReceipt containing transaction details, or null if the
 	 *         transaction failed
+	 * @throws VehicleNotAvailableException if the vehicle is not found or is
+	 *                                      already available (not currently rented)
 	 */
 	public RentalReceipt endRental() {
 		int vehicleId = inputHandler.readInt("\nEnter vehicle ID to return > ");

@@ -205,24 +205,29 @@ public class Menu {
 
 	/**
 	 * Handles the process of removing a vehicle from the fleet.
+	 *
+	 * @throws VehicleNotAvailableException if selected vehicle does not exist
 	 */
 	private void removeVehicle() {
 		ConsoleUtils.clearScreen();
 		out.println("REMOVE VEHICLE FROM FLEET (Enter :q to cancel)\n");
 		displayVehicleInventory();
+		while (true) {
+			int vehicleId;
+			try {
+				vehicleId = inputHandler.readInt("\nEnter ID of the vehicle you want to remove from fleet > ");
 
-		int vehicleId;
-		try {
-			vehicleId = inputHandler.readInt("\nEnter ID of the vehicle you want to remove from fleet > ");
-		} catch (OperationCancelledException e) {
-			return;
-		}
-
-		var removed = vehicleManager.removeVehicleById(vehicleId);
-		if (removed) {
-			out.println("\nVehicle with ID " + vehicleId + " was successfully removed.");
-		} else {
-			out.println("\nVehicle with ID " + vehicleId + " does not exist!");
+				var removed = vehicleManager.removeVehicleById(vehicleId);
+				if (removed) {
+					out.println("\nVehicle with ID " + vehicleId + " was successfully removed.");
+					break;
+				}
+				throw new VehicleNotAvailableException("Vehicle with ID " + vehicleId + " does not exist!");
+			} catch (OperationCancelledException e) {
+				return;
+			} catch (VehicleNotAvailableException e) {
+				out.println(e.getMessage());
+			}
 		}
 
 		ConsoleUtils.waitForEnter(scan);
@@ -230,6 +235,8 @@ public class Menu {
 
 	/**
 	 * Handles the process of updating a vehicle's rental price.
+	 *
+	 * @throws VehicleNotAvailableException if selected vehicle not found
 	 */
 	private void updateRentalPrice() {
 		ConsoleUtils.clearScreen();
@@ -241,9 +248,7 @@ public class Menu {
 			Vehicle vehicleToUpdate = vehicleManager.getVehicleById(vehicleId);
 
 			if (vehicleToUpdate == null) {
-				out.println("Vehicle with ID " + vehicleId + " not found.");
-				ConsoleUtils.waitForEnter(scan);
-				return;
+				throw new VehicleNotAvailableException("Vehicle with ID " + vehicleId + " not found.");
 			}
 
 			out.println("Current vehicle details: " + vehicleId + ". " + vehicleToUpdate.getMake() + " "
@@ -256,10 +261,9 @@ public class Menu {
 			out.println("\nPrice updated.");
 		} catch (OperationCancelledException e) {
 			return;
-		} catch (IllegalArgumentException e) {
+		} catch (VehicleNotAvailableException e) {
 			out.println(e.getMessage());
 		}
-
 		ConsoleUtils.waitForEnter(scan);
 	}
 
