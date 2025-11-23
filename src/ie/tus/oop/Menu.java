@@ -211,6 +211,7 @@ public class Menu {
 		ConsoleUtils.clearScreen();
 		out.println("REMOVE VEHICLE FROM FLEET (Enter :q to cancel)\n");
 		displayVehicleInventory();
+
 		while (true) {
 			int vehicleId;
 			try {
@@ -221,11 +222,10 @@ public class Menu {
 					out.println("\nVehicle with ID " + vehicleId + " was successfully removed.");
 					break;
 				}
-				throw new VehicleNotAvailableException("Vehicle with ID " + vehicleId + " does not exist!");
+				out.println(
+						ConsoleUtils.RED + "Vehicle with ID " + vehicleId + " does not exist!" + ConsoleUtils.RESET);
 			} catch (OperationCancelledException e) {
 				return;
-			} catch (VehicleNotAvailableException e) {
-				out.println(e.getMessage());
 			}
 		}
 
@@ -244,10 +244,6 @@ public class Menu {
 		try {
 			int vehicleId = inputHandler.readInt("\nEnter the ID of the vehicle to update > ");
 			Vehicle vehicleToUpdate = vehicleManager.getVehicleById(vehicleId);
-
-			if (vehicleToUpdate == null) {
-				throw new VehicleNotAvailableException("Vehicle with ID " + vehicleId + " not found.");
-			}
 
 			out.println("Current vehicle details: " + vehicleId + ". " + vehicleToUpdate.getMake() + " "
 					+ vehicleToUpdate.getModel() + " - " + vehicleToUpdate.formatDailyRate());
