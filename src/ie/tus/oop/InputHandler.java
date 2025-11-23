@@ -40,6 +40,7 @@ public class InputHandler {
 	 *
 	 * @param prompt the prompt message to display
 	 * @return the integer entered by the user
+	 * @throws OperationCancelledException if the user enters the quit command
 	 */
 	public int readInt(String prompt) {
 		while (true) {
@@ -60,6 +61,7 @@ public class InputHandler {
 	 *
 	 * @param prompt the prompt message to display
 	 * @return the double entered by the user
+	 * @throws OperationCancelledException if the user enters the quit command
 	 */
 	public double readDouble(String prompt) {
 		while (true) {
@@ -80,6 +82,7 @@ public class InputHandler {
 	 *
 	 * @param prompt the prompt message to display
 	 * @return the string entered by the user
+	 * @throws OperationCancelledException if the user enters the quit command
 	 */
 	public String readString(String prompt) {
 		while (true) {
@@ -98,7 +101,8 @@ public class InputHandler {
 	 *
 	 * @param prompt the prompt message to display
 	 * @return the boolean value entered by the user
-	 * @throws InvalidChoiceException if the user enters invalid input
+	 * @throws InvalidChoiceException      if the user enters invalid input
+	 * @throws OperationCancelledException if the user enters the quit command
 	 */
 	public boolean readBoolean(String prompt) {
 		while (true) {
@@ -109,8 +113,8 @@ public class InputHandler {
 				return switch (input.toLowerCase()) {
 				case "t" -> true;
 				case "f" -> false;
-				default -> throw new InvalidChoiceException(ConsoleUtils.RED
-						+ "Invalid input. Please enter either 't' for True or 'f' for False" + ConsoleUtils.RESET);
+				default -> throw new InvalidChoiceException(
+						"Invalid input. Please enter either 't' for True or 'f' for False");
 				};
 			} catch (InvalidChoiceException e) {
 				out.println(e.getMessage());

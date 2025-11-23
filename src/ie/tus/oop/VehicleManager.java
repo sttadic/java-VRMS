@@ -65,15 +65,16 @@ public class VehicleManager {
 	 * Retrieves a vehicle by its ID.
 	 *
 	 * @param vehicleId the ID of the vehicle to retrieve
-	 * @return the vehicle with the specified ID, or null if not found
+	 * @return the vehicle with the specified ID
+	 * @throws VehicleNotAvailableException if the vehicle is not found
 	 */
-	public Vehicle getVehicleById(int vehicleId) {
+	public Vehicle getVehicleById(int vehicleId) throws VehicleNotAvailableException {
 		for (Vehicle vehicle : vehicles) {
 			if (vehicle.getVehicleId() == vehicleId) {
 				return vehicle;
 			}
 		}
-		return null;
+		throw new VehicleNotAvailableException("Vehicle with ID " + vehicleId + " not found.");
 	}
 
 	/**

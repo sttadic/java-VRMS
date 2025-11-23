@@ -206,7 +206,6 @@ public class Menu {
 	/**
 	 * Handles the process of removing a vehicle from the fleet.
 	 *
-	 * @throws VehicleNotAvailableException if selected vehicle does not exist
 	 */
 	private void removeVehicle() {
 		ConsoleUtils.clearScreen();
@@ -236,7 +235,6 @@ public class Menu {
 	/**
 	 * Handles the process of updating a vehicle's rental price.
 	 *
-	 * @throws VehicleNotAvailableException if selected vehicle not found
 	 */
 	private void updateRentalPrice() {
 		ConsoleUtils.clearScreen();
