@@ -3,6 +3,7 @@ package ie.tus.oop;
 import static java.lang.System.out;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -53,6 +54,37 @@ public class ConsoleUtils {
 	public static void clearScreen() {
 		System.out.print("\033[H\033[2J");
 		System.out.flush();
+	}
+
+	/**
+	 * Displays a formatted table of vehicles. Shows all vehicle details including
+	 * ID, type, make, model, specifications, and availability.
+	 *
+	 * @param vehicles       the list of vehicles to display
+	 * @param fleetSize      the total number of vehicles in the fleet
+	 * @param availableCount the number of available vehicles
+	 */
+	static void displayVehicleInventoryTable(List<Vehicle> vehicles, int fleetSize, long availableCount) {
+		if (vehicles.isEmpty()) {
+			out.println(RED + "No vehicles in inventory." + RESET);
+			return;
+		}
+
+		out.println();
+		out.printf(VEHICLE_HEADER_FORMAT, VEHICLE_HEADER);
+		out.printf(
+				"----------------------------------------------------------------------------------------------------------------------------------%n");
+
+		for (Vehicle vehicle : vehicles) {
+			out.printf("%2d  | %s", vehicle.getVehicleId(), vehicle.toString());
+
+			String additionalSpecs = vehicle.getSpecs();
+			if (!additionalSpecs.isEmpty()) {
+				out.println(additionalSpecs);
+			}
+		}
+		out.println("\nTotal count of vehicles --> " + fleetSize);
+		out.println("Available for rental -----> " + availableCount);
 	}
 
 	/**

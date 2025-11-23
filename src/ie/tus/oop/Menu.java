@@ -76,25 +76,9 @@ public class Menu {
 	 */
 	private void displayVehicleInventory() {
 		var vehicles = vehicleManager.getAllVehicles();
-		if (vehicles.isEmpty()) {
-			out.println("No vehicles in inventory");
-			return;
-		}
-		out.println();
-		out.printf(ConsoleUtils.VEHICLE_HEADER_FORMAT, ConsoleUtils.VEHICLE_HEADER);
-		out.printf(
-				"----------------------------------------------------------------------------------------------------------------------------------%n");
 
-		for (Vehicle vehicle : vehicles) {
-			out.printf("%2d  | %s", vehicle.getVehicleId(), vehicle.toString());
-
-			String additionalSpecs = vehicle.getSpecs();
-			if (!additionalSpecs.isEmpty()) {
-				out.println(additionalSpecs);
-			}
-		}
-		out.println("\nTotal count of vehicles --> " + vehicleManager.getFleetSize());
-		out.println("Available for rental -----> " + vehicleManager.getAvailableVehicleCount());
+		ConsoleUtils.displayVehicleInventoryTable(vehicles, vehicleManager.getFleetSize(),
+				vehicleManager.getAvailableVehicleCount());
 	}
 
 	/**
