@@ -36,22 +36,23 @@ public class RentalService {
 	 * @param customerName the name of the customer renting the vehicle
 	 */
 	public void startRental(String customerName) {
-		int vehicleId = inputHandler.readInt("\nEnter vehicle ID to rent > ");
+		Vehicle vehicleToRent;
 
-		try {
-			Vehicle vehicleToRent = vehicleManager.getVehicleById(vehicleId);
+		while (true) {
+			vehicleToRent = inputHandler.selectVehicle("\nEnter vehicle ID to rent > ", vehicleManager);
 			if (!vehicleToRent.isAvailable()) {
-				throw new VehicleNotAvailableException("Selected vehicle is currently rented.");
+				out.println(ConsoleUtils.RED + "Selected vehicle is currently rented." + ConsoleUtils.RESET);
+				continue;
 			}
-
-			transactions.add(new RentalTransaction(customerName, vehicleId, vehicleToRent.getMake(),
-					vehicleToRent.getModel(), LocalDate.now()));
-			vehicleToRent.setAvailable(false);
-			out.println("\nVehicle " + vehicleToRent.getMake() + " " + vehicleToRent.getModel()
-					+ " rented successfully to " + customerName + ".");
-		} catch (VehicleNotAvailableException e) {
-			out.println(e.getMessage());
+			break;
 		}
+		vehicleToRent.setAvailable(false);
+		transactions.add(new RentalTransaction(customerName, vehicleToRent.getVehicleId(), vehicleToRent.getMake(),
+				vehicleToRent.getModel(), LocalDate.now()));
+
+		out.println("\nVehicle " + vehicleToRent.getMake() + " " + vehicleToRent.getModel() + " rented successfully to "
+				+ customerName + ".");
+
 	}
 
 	/**
@@ -62,48 +63,47 @@ public class RentalService {
 	 *         transaction failed
 	 */
 	public RentalReceipt endRental() {
-		int vehicleId = inputHandler.readInt("\nEnter vehicle ID to return > ");
+		Vehicle vehicleToReturn;
 
-		try {
-			Vehicle vehicleToReturn = vehicleManager.getVehicleById(vehicleId);
+		while (true) {
+			vehicleToReturn = inputHandler.selectVehicle("\nEnter vehicle ID to return > ", vehicleManager);
 			if (vehicleToReturn.isAvailable()) {
-				throw new VehicleNotAvailableException("Selected vehicle is not currently rented.");
+				out.println(ConsoleUtils.RED + "Selected vehicle is not currently rented." + ConsoleUtils.RESET);
+				continue;
 			}
+			break;
+		}
 
-			// ADVANCED lambdas/predicate/final
-			final int finalVehicleId = vehicleId;
-			var transaction = transactions.stream().filter(t -> t.vehicleID() == finalVehicleId).findFirst()
-					.orElse(null);
+		// ADVANCED lambdas/predicate/final
+		final var finalVehicleToReturn = vehicleToReturn;
+		var transaction = transactions.stream().filter(t -> t.vehicleID() == finalVehicleToReturn.getVehicleId())
+				.findFirst().orElse(null);
 
-			if (transaction == null) {
-				out.println("Could not find matching rental transaction.");
-				return null;
-			}
-
-			transactions.remove(transaction);
-			vehicleToReturn.setAvailable(true);
-			// FUNDAMENTALS LocalDate
-			LocalDate endDate = LocalDate.now();
-
-			double effectiveRate = vehicleToReturn.getDailyRate();
-			// ADVANCED pattern matching for instanceof
-			if (vehicleToReturn instanceof Car c && c.getFuelType() == FuelType.ELECTRIC) {
-				out.println("Applying 15% electric car discount!");
-				effectiveRate *= .85;
-			} else if (vehicleToReturn.getFuelType() == FuelType.ELECTRIC) {
-				out.println("Applying 10% electric vehicle discount!");
-				effectiveRate *= .90;
-			}
-
-			double totalCost = Rentable.calculateRentalCost(effectiveRate, transaction.rentalStartDate(), endDate);
-			String vehicleDescription = vehicleToReturn.getMake() + " " + vehicleToReturn.getModel();
-
-			return new RentalReceipt(transaction.customerName(), finalVehicleId, vehicleDescription,
-					transaction.rentalStartDate(), endDate, totalCost);
-		} catch (VehicleNotAvailableException e) {
-			out.println(e.getMessage());
+		if (transaction == null) {
+			out.println(ConsoleUtils.RED + "Could not find matching rental transaction." + ConsoleUtils.RESET);
 			return null;
 		}
+
+		transactions.remove(transaction);
+		vehicleToReturn.setAvailable(true);
+		// FUNDAMENTALS LocalDate
+		LocalDate endDate = LocalDate.now();
+
+		double effectiveRate = vehicleToReturn.getDailyRate();
+		// ADVANCED pattern matching for instanceof
+		if (vehicleToReturn instanceof Car c && c.getFuelType() == FuelType.ELECTRIC) {
+			out.println("Applying 15% electric car discount!");
+			effectiveRate *= .85;
+		} else if (vehicleToReturn.getFuelType() == FuelType.ELECTRIC) {
+			out.println("Applying 10% electric vehicle discount!");
+			effectiveRate *= .90;
+		}
+
+		double totalCost = Rentable.calculateRentalCost(effectiveRate, transaction.rentalStartDate(), endDate);
+		String vehicleDescription = vehicleToReturn.getMake() + " " + vehicleToReturn.getModel();
+
+		return new RentalReceipt(transaction.customerName(), finalVehicleToReturn.getVehicleId(), vehicleDescription,
+				transaction.rentalStartDate(), endDate, totalCost);
 	}
 
 	/**
