@@ -69,8 +69,10 @@ public class InputHandler {
 			String input = scan.nextLine().strip();
 			checkForQuit(input);
 			try {
-				return Double.parseDouble(input);
-			} catch (NumberFormatException e) {
+				double inputDouble = Double.parseDouble(input);
+				Vehicle.validateDailyRate(inputDouble);
+				return inputDouble;
+			} catch (IllegalArgumentException e) {
 				out.println(ConsoleUtils.RED + "Invalid input. Please enter a number." + ConsoleUtils.RESET);
 			}
 		}
@@ -117,6 +119,17 @@ public class InputHandler {
 						"Invalid input. Please enter either 't' for True or 'f' for False");
 				};
 			} catch (InvalidChoiceException e) {
+				out.println(e.getMessage());
+			}
+		}
+	}
+
+	public Vehicle selectVehicle(String prompt, VehicleManager vehicleManager) {
+		while (true) {
+			int vehicleId = readInt(prompt);
+			try {
+				return vehicleManager.getVehicleById(vehicleId);
+			} catch (VehicleNotAvailableException e) {
 				out.println(e.getMessage());
 			}
 		}

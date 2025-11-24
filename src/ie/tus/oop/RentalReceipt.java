@@ -10,6 +10,7 @@ import java.time.LocalDate;
  *
  * @author Stjepan Tadic
  */
+//ADVANCED custom immutable type
 public final class RentalReceipt {
 	private final String customerName;
 	private final int vehicleId;

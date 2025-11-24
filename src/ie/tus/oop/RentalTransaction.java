@@ -14,6 +14,7 @@ import java.time.LocalDate;
  *
  * @author Stjepan Tadic
  */
+//ADVANCED record
 public record RentalTransaction(String customerName, int vehicleID, String vehicleMake, String vehicleModel,
 		LocalDate rentalStartDate) {
 

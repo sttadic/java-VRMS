@@ -12,6 +12,7 @@ import java.util.ArrayList;
  * @author Stjepan Tadic
  */
 public class RentalService {
+	// FUNDAMENTALS List/ArrayList
 	private ArrayList<RentalTransaction> transactions;
 	private VehicleManager vehicleManager;
 	private final InputHandler inputHandler;
@@ -69,6 +70,7 @@ public class RentalService {
 				throw new VehicleNotAvailableException("Selected vehicle is not currently rented.");
 			}
 
+			// ADVANCED lambdas/predicate/final
 			final int finalVehicleId = vehicleId;
 			var transaction = transactions.stream().filter(t -> t.vehicleID() == finalVehicleId).findFirst()
 					.orElse(null);
@@ -80,10 +82,11 @@ public class RentalService {
 
 			transactions.remove(transaction);
 			vehicleToReturn.setAvailable(true);
+			// FUNDAMENTALS LocalDate
 			LocalDate endDate = LocalDate.now();
 
-			// Pattern matching for instanceof
 			double effectiveRate = vehicleToReturn.getDailyRate();
+			// ADVANCED pattern matching for instanceof
 			if (vehicleToReturn instanceof Car c && c.getFuelType() == FuelType.ELECTRIC) {
 				out.println("Applying 15% electric car discount!");
 				effectiveRate *= .85;
@@ -108,6 +111,7 @@ public class RentalService {
 	 *
 	 * @return a list of active rental transactions
 	 */
+	// ADVANCED call-by-vale and defensive copying
 	public ArrayList<RentalTransaction> getActiveRentals() {
 		return new ArrayList<>(transactions);
 	}

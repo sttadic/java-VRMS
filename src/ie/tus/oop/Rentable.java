@@ -9,6 +9,7 @@ import java.time.temporal.ChronoUnit;
  *
  * @author Stjepan Tadic
  */
+// FUNDAMENTALS interface
 public interface Rentable {
 	/**
 	 * Gets the daily rental rate.
@@ -47,6 +48,7 @@ public interface Rentable {
 	 *
 	 * @return the formatted daily rate as a currency string
 	 */
+	// ADVANCED default interface method
 	default String formatDailyRate() {
 		return formatCurrency(getDailyRate());
 	}
@@ -58,6 +60,7 @@ public interface Rentable {
 	 * @param amount the amount to format
 	 * @return the formatted currency string (e.g., "€50.00")
 	 */
+	// ADVANCED private interface method
 	private String formatCurrency(double amount) {
 		return String.format("€%.2f", amount);
 	}
@@ -71,6 +74,7 @@ public interface Rentable {
 	 * @param endDate   the rental end date
 	 * @return the total rental cost
 	 */
+	// ADVANCED static interface method
 	static double calculateRentalCost(double dailyRate, LocalDate startDate, LocalDate endDate) {
 		long numberOfDays = ChronoUnit.DAYS.between(startDate, endDate);
 		if (numberOfDays < 1) {

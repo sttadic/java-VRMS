@@ -22,6 +22,7 @@ public class ConsoleUtils {
 	public static final String RENTAL_HEADER_FORMAT = "%-18s | %-3s | %-20s | %s%n";
 	/** Format string for rental records table rows */
 	public static final String RENTAL_ROW_FORMAT = "%-18.18s | %-6s | %-20.20s | %s%n";
+	// FUNDAMENTALS arrays
 	/** Column headers for vehicle inventory table */
 	public static final Object[] VEHICLE_HEADER = { "ID", "TYPE", "MODEL", "MAKE", "COLOUR", "FUEL", "PRICE/DAY",
 			"AVAILABILITY", "DETAILS" };
@@ -77,7 +78,7 @@ public class ConsoleUtils {
 
 		for (Vehicle vehicle : vehicles) {
 			out.printf("%2d  | %s", vehicle.getVehicleId(), vehicle.toString());
-
+			// FUNDAMENTALS polymorphism - getSpecs() depends on vehicle type
 			String additionalSpecs = vehicle.getSpecs();
 			if (!additionalSpecs.isEmpty()) {
 				out.println(additionalSpecs);

@@ -48,7 +48,7 @@ public class VehicleManager {
 	 * @return the count of available vehicles
 	 */
 	public long getAvailableVehicleCount() {
-		// Stream with method reference
+		// ADVANCED method reference
 		return vehicles.stream().filter(Vehicle::isAvailable).count();
 	}
 
@@ -82,6 +82,7 @@ public class VehicleManager {
 	 *
 	 * @param newVehicles the vehicles to add
 	 */
+	// FUNDAMENTALS varargs - variable number of arguments
 	public void addVehicles(Vehicle... newVehicles) {
 		vehicles.addAll(Arrays.asList(newVehicles));
 	}

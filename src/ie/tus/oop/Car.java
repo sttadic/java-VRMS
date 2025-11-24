@@ -25,7 +25,7 @@ public final class Car extends Vehicle {
 	 */
 	public Car(String make, String model, String colour, FuelType fuelType, double dailyRate,
 			boolean hasAirConditioning, boolean hasNavigation) {
-		// Flexible constructor body demonstration
+		// JAVA25 flexible constructor body
 		Vehicle.validateDailyRate(dailyRate);
 
 		super(make, model, colour, fuelType, dailyRate);
@@ -45,6 +45,7 @@ public final class Car extends Vehicle {
 	 * @param dailyRate the daily rental rate for the car
 	 */
 	public Car(String make, String model, String colour, FuelType fuelType, double dailyRate) {
+		// FUNDAMENTALS this() - constructor chaining / method overloading
 		this(make, model, colour, fuelType, dailyRate, false, false);
 	}
 
@@ -71,6 +72,7 @@ public final class Car extends Vehicle {
 	 *
 	 * @return a formatted string containing air conditioning and navigation status
 	 */
+	// FUNDAMENTALS method overriding
 	@Override
 	public String getSpecs() {
 		return String.format("    | AC: %s, Navigation: %s", isAirConditioning(), isNavigation());

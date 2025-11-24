@@ -22,7 +22,7 @@ public final class Van extends Vehicle {
 	 */
 	public Van(String make, String model, String colour, FuelType fuelType, double dailyRate, double cargoCapacityKg) {
 		Vehicle.validateDailyRate(dailyRate);
-
+		// FUNDAMENTALS super() and super.
 		super(make, model, colour, fuelType, dailyRate);
 		super.setVehicleType(VehicleType.VAN);
 		this.cargoCapacityKg = cargoCapacityKg;

@@ -75,6 +75,7 @@ public class Menu {
 	 * Displays the complete vehicle inventory including all vehicle details.
 	 */
 	private void displayVehicleInventory() {
+		// FUNDAMENTALS lvti - local variable type inference
 		var vehicles = vehicleManager.getAllVehicles();
 
 		ConsoleUtils.displayVehicleInventoryTable(vehicles, vehicleManager.getFleetSize(),
@@ -95,7 +96,6 @@ public class Menu {
 			String model = inputHandler.readString("Enter Model > ");
 			String colour = inputHandler.readString("Enter Colour > ");
 			double dailyRate = inputHandler.readDouble("Enter Daily Rate > ");
-			Vehicle.validateDailyRate(dailyRate);
 			FuelType fuelType = selectFuelType();
 
 			Vehicle newVehicle = createVehicle(vehicleType, make, model, colour, fuelType, dailyRate);
@@ -171,6 +171,7 @@ public class Menu {
 	private Vehicle createVehicle(VehicleType type, String make, String model, String colour, FuelType fuelType,
 			double dailyRate) {
 		return switch (type) {
+		// ADVANCED switch expression
 		case CAR -> {
 			boolean hasAirConditioning = inputHandler.readBoolean("Has Air Conditioning? (t)rue/(f)alse > ");
 			boolean hasNavigation = inputHandler.readBoolean("Has Navigation? (t)rue/(f)alse > ");
@@ -226,21 +227,17 @@ public class Menu {
 		displayVehicleInventory();
 
 		try {
-			int vehicleId = inputHandler.readInt("\nEnter the ID of the vehicle to update > ");
-			Vehicle vehicleToUpdate = vehicleManager.getVehicleById(vehicleId);
+			Vehicle vehicleToUpdate = inputHandler.selectVehicle("\nEnter the ID of the vehicle to update > ",
+					vehicleManager);
 
-			out.println("Current vehicle details: " + vehicleId + ". " + vehicleToUpdate.getMake() + " "
-					+ vehicleToUpdate.getModel() + " - " + vehicleToUpdate.formatDailyRate());
+			out.println("Current vehicle details: " + vehicleToUpdate.getVehicleId() + ". " + vehicleToUpdate.getMake()
+					+ " " + vehicleToUpdate.getModel() + " - " + vehicleToUpdate.formatDailyRate());
 
 			double newRate = inputHandler.readDouble("Enter new Daily Rate: ");
-			Vehicle.validateDailyRate(newRate);
-
 			vehicleToUpdate.setDailyRate(newRate);
 			out.println("\nPrice updated.");
 		} catch (OperationCancelledException e) {
 			return;
-		} catch (VehicleNotAvailableException e) {
-			out.println(e.getMessage());
 		}
 		ConsoleUtils.waitForEnter(scan);
 	}
