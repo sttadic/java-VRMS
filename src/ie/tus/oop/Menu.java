@@ -197,21 +197,18 @@ public class Menu {
 		out.println("REMOVE VEHICLE FROM FLEET (Enter :q to cancel)\n");
 		displayVehicleInventory();
 
-		while (true) {
-			int vehicleId;
-			try {
-				vehicleId = inputHandler.readInt("\nEnter ID of the vehicle you want to remove from fleet > ");
+		try {
+			Vehicle vehicleToRemove = inputHandler
+					.selectVehicle("\nEnter ID of the vehicle you want to remove from fleet > ", vehicleManager);
 
-				var removed = vehicleManager.removeVehicleById(vehicleId);
-				if (removed) {
-					out.println("\nVehicle with ID " + vehicleId + " was successfully removed.");
-					break;
-				}
-				out.println(
-						ConsoleUtils.RED + "Vehicle with ID " + vehicleId + " does not exist!" + ConsoleUtils.RESET);
-			} catch (OperationCancelledException e) {
-				return;
+			var removed = vehicleManager.removeVehicleById(vehicleToRemove.getVehicleId());
+			if (!removed) {
+				out.println(ConsoleUtils.RED + "Something went wrong. Please try again." + ConsoleUtils.RESET);
+			} else {
+				out.println("\nVehicle with ID " + vehicleToRemove.getVehicleId() + " was successfully removed.");
 			}
+		} catch (OperationCancelledException e) {
+			return;
 		}
 
 		ConsoleUtils.waitForEnter(scan);

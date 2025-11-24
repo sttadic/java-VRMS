@@ -124,6 +124,17 @@ public class InputHandler {
 		}
 	}
 
+	/**
+	 * Prompts the user to select a vehicle by ID and returns the vehicle object.
+	 * Repeatedly prompts until a valid vehicle ID is entered or the user cancels.
+	 * If an invalid vehicle ID is entered, displays an error message and prompts
+	 * again.
+	 *
+	 * @param prompt         the prompt message to display to the user
+	 * @param vehicleManager the vehicle manager used to retrieve vehicles
+	 * @return the selected Vehicle object
+	 * @throws OperationCancelledException if the user enters the quit command
+	 */
 	public Vehicle selectVehicle(String prompt, VehicleManager vehicleManager) {
 		while (true) {
 			int vehicleId = readInt(prompt);
