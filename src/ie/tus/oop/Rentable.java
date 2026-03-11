@@ -10,7 +10,8 @@ import java.time.temporal.ChronoUnit;
  * @author Stjepan Tadic
  */
 // FUNDAMENTALS interface
-public interface Rentable {
+// ADVANCED sealed interface
+public sealed interface Rentable permits Vehicle {
 	/**
 	 * Gets the daily rental rate.
 	 *
