@@ -2,7 +2,9 @@ package ie.tus.oop;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Manages the fleet of vehicles in the rental system. Provides methods for
@@ -95,6 +97,17 @@ public class VehicleManager {
 	 */
 	public boolean removeVehicleById(int vehicleId) {
 		return vehicles.removeIf(vehicle -> vehicle.getVehicleId() == vehicleId);
+	}
+
+	/**
+	 * Returns a sorted copy of the fleet using the given comparator.
+	 *
+	 * @param comparator the sort order to apply
+	 * @return a sorted list of all vehicles
+	 */
+	// ADVANCED Comparator — passed as a parameter, applied via sorted()
+	public List<Vehicle> getSortedVehicles(Comparator<Vehicle> comparator) {
+		return vehicles.stream().sorted(comparator).collect(Collectors.toList());
 	}
 
 }

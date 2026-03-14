@@ -2,6 +2,7 @@ package ie.tus.oop;
 
 import static java.lang.System.out;
 
+import java.util.Comparator;
 import java.util.Scanner;
 
 /**
@@ -57,7 +58,7 @@ public class Menu {
 			ConsoleUtils.clearScreen();
 			out.println("VEHICLE INVENTORY\n");
 			displayVehicleInventory();
-			ConsoleUtils.waitForEnter(scan);
+			displaySortSubMenu();
 		}
 		case 2 -> addNewVehicle();
 		case 3 -> removeVehicle();
@@ -80,6 +81,49 @@ public class Menu {
 
 		ConsoleUtils.displayVehicleInventoryTable(vehicles, vehicleManager.getFleetSize(),
 				vehicleManager.getAvailableVehicleCount());
+	}
+
+	/**
+	 * Displays the sort sub-menu and re-displays the inventory in the chosen order.
+	 */
+	private void displaySortSubMenu() {
+		while (true) {
+			out.println("\nSort by:");
+			out.println("(1) Daily rate (low \u2192 high)");
+			out.println("(2) Model (A \u2192 Z)");
+			out.println("(3) Vehicle type");
+			out.println("(4) Available first");
+			out.println("(5) Rate, then model");
+			out.println("(6) Back to main menu");
+
+			try {
+				int choice = inputHandler.readInt("Select sort option > ");
+
+				if (choice == 6) {
+					break;
+				}
+
+				// ADVANCED Comparator.comparing() with method references and chaining
+				Comparator<Vehicle> comparator = switch (choice) {
+				case 1 -> Comparator.comparing(Vehicle::getDailyRate);
+				case 2 -> Comparator.comparing(Vehicle::getModel);
+				case 3 -> Comparator.comparing(Vehicle::getVehicleType);
+				case 4 -> Comparator.comparing(Vehicle::isAvailable).reversed();
+				case 5 -> Comparator.comparing(Vehicle::getDailyRate).thenComparing(Vehicle::getModel);
+				default -> null;
+				};
+
+				if (comparator != null) {
+					ConsoleUtils.clearScreen();
+					out.println("VEHICLE INVENTORY\n");
+					var sorted = vehicleManager.getSortedVehicles(comparator);
+					ConsoleUtils.displayVehicleInventoryTable(sorted, vehicleManager.getFleetSize(),
+							vehicleManager.getAvailableVehicleCount());
+				}
+			} catch (OperationCancelledException e) {
+				break;
+			}
+		}
 	}
 
 	/**
