@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -108,6 +110,27 @@ public class VehicleManager {
 	// ADVANCED Comparator — passed as a parameter, applied via sorted()
 	public List<Vehicle> getSortedVehicles(Comparator<Vehicle> comparator) {
 		return vehicles.stream().sorted(comparator).collect(Collectors.toList());
+	}
+
+	/**
+	 * Applies the given action to every vehicle in the fleet.
+	 *
+	 * @param action the Consumer to apply to each vehicle
+	 */
+	// ADVANCED Consumer<Vehicle> lambda — forEach terminal operation
+	public void forEachVehicle(Consumer<Vehicle> action) {
+		vehicles.stream().forEach(action);
+	}
+
+	/**
+	 * Maps each vehicle in the fleet to a String using the given mapper function.
+	 *
+	 * @param mapper the Function that converts a Vehicle to a String
+	 * @return a list of mapped strings, one per vehicle
+	 */
+	// ADVANCED Function<Vehicle, String> lambda — map intermediate operation
+	public List<String> getVehicleSummaries(Function<Vehicle, String> mapper) {
+		return vehicles.stream().map(mapper).collect(Collectors.toList());
 	}
 
 }
