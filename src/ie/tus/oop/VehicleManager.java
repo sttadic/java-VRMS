@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -131,6 +134,88 @@ public class VehicleManager {
 	// ADVANCED Function<Vehicle, String> lambda — map intermediate operation
 	public List<String> getVehicleSummaries(Function<Vehicle, String> mapper) {
 		return vehicles.stream().map(mapper).collect(Collectors.toList());
+	}
+
+	/**
+	 * Computes a formatted fleet statistics report covering a broad range of stream
+	 * terminal and intermediate operations.
+	 *
+	 * @return a formatted multi-line string containing the statistics
+	 */
+	// ADVANCED Streams — terminal: min, max, findAny, allMatch, anyMatch, noneMatch, forEach, groupingBy, partitioningBy, toMap
+	// ADVANCED Streams — intermediate: map, distinct, sorted, limit
+	// ADVANCED Supplier<Optional<Vehicle>> — deferred min/max evaluation
+	public String getFleetStatistics() {
+		StringBuilder sb = new StringBuilder();
+
+		// ADVANCED Supplier<Optional<Vehicle>> — captures live fleet state; evaluated only when .get() is called
+		Supplier<Optional<Vehicle>> cheapest = () -> vehicles.stream()
+				.min(Comparator.comparing(Vehicle::getDailyRate));
+		Supplier<Optional<Vehicle>> mostExpensive = () -> vehicles.stream()
+				.max(Comparator.comparing(Vehicle::getDailyRate));
+
+		// min() — cheapest vehicle (invoked via Supplier)
+		cheapest.get().ifPresent(v -> sb.append(
+				String.format("Cheapest vehicle:       %s %s (€%.2f/day)%n", v.getMake(), v.getModel(), v.getDailyRate())));
+
+		// max() — most expensive vehicle (invoked via Supplier)
+		mostExpensive.get().ifPresent(v -> sb.append(
+				String.format("Most expensive vehicle: %s %s (€%.2f/day)%n", v.getMake(), v.getModel(), v.getDailyRate())));
+
+		// findAny() — any available electric vehicle
+		Optional<Vehicle> anyElectric = vehicles.stream()
+				.filter(v -> v.getFuelType() == FuelType.ELECTRIC && v.isAvailable())
+				.findAny();
+		sb.append(String.format("Any electric available: %s%n",
+				anyElectric.map(v -> v.getMake() + " " + v.getModel()).orElse("None")));
+
+		// allMatch() — are all vehicles currently available?
+		boolean allAvailable = vehicles.stream().allMatch(Vehicle::isAvailable);
+		sb.append(String.format("All vehicles available: %b%n", allAvailable));
+
+		// anyMatch() — are there any electric vehicles in the fleet?
+		boolean hasElectric = vehicles.stream().anyMatch(v -> v.getFuelType() == FuelType.ELECTRIC);
+		sb.append(String.format("Electric in fleet:      %b%n", hasElectric));
+
+		// noneMatch() — are no vehicles currently rented?
+		boolean noneRented = vehicles.stream().noneMatch(v -> !v.isAvailable());
+		sb.append(String.format("No vehicles rented:     %b%n%n", noneRented));
+
+		// map() + distinct() — unique fuel types present in the fleet
+		List<FuelType> fuelTypes = vehicles.stream()
+				.map(Vehicle::getFuelType)
+				.distinct()
+				.collect(Collectors.toList());
+		sb.append("Fuel types in fleet:  ").append(fuelTypes).append("\n");
+
+		// sorted() + limit() — top 3 cheapest vehicles
+		List<Vehicle> top3 = vehicles.stream()
+				.sorted(Comparator.comparing(Vehicle::getDailyRate))
+				.limit(3)
+				.collect(Collectors.toList());
+		sb.append("Top 3 cheapest:       ");
+		top3.forEach(v -> sb.append(String.format("%s %s (€%.2f)  ", v.getMake(), v.getModel(), v.getDailyRate())));
+		sb.append("\n\n");
+
+		// collect(groupingBy()) — vehicles grouped by VehicleType
+		Map<VehicleType, List<Vehicle>> byType = vehicles.stream()
+				.collect(Collectors.groupingBy(Vehicle::getVehicleType));
+		sb.append("By vehicle type:\n");
+		byType.forEach((type, list) -> sb.append(String.format("  %-4s: %d%n", type, list.size())));
+
+		// collect(partitioningBy()) — split into available and rented
+		Map<Boolean, List<Vehicle>> partition = vehicles.stream()
+				.collect(Collectors.partitioningBy(Vehicle::isAvailable));
+		sb.append(String.format("Available: %d  |  Rented: %d%n%n",
+				partition.get(true).size(), partition.get(false).size()));
+
+		// collect(toMap()) — vehicle ID mapped to its daily rate
+		Map<Integer, Double> idToRate = vehicles.stream()
+				.collect(Collectors.toMap(Vehicle::getVehicleId, Vehicle::getDailyRate));
+		sb.append("ID → Daily rate:\n");
+		idToRate.forEach((id, rate) -> sb.append(String.format("  %d → €%.2f%n", id, rate)));
+
+		return sb.toString();
 	}
 
 }

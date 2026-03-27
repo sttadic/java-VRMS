@@ -51,7 +51,7 @@ public class Menu {
 	 * @throws InvalidChoiceException if the user enters an invalid choice
 	 */
 	private void handleChoice() {
-		int choice = inputHandler.readInt(ConsoleUtils.GREEN + "\nSelect Option (1-8) > " + ConsoleUtils.RESET);
+		int choice = inputHandler.readInt(ConsoleUtils.GREEN + "\nSelect Option (1-9) > " + ConsoleUtils.RESET);
 
 		switch (choice) {
 		case 1 -> {
@@ -66,8 +66,9 @@ public class Menu {
 		case 5 -> handleNewRental();
 		case 6 -> handleVehicleReturn();
 		case 7 -> viewRentals();
-		case 8 -> keepRunning = false;
-		default -> throw new InvalidChoiceException("\nInvalid Selection! Please choose an option from 1 to 8.");
+		case 8 -> showFleetStatistics();
+		case 9 -> keepRunning = false;
+		default -> throw new InvalidChoiceException("\nInvalid Selection! Please choose an option from 1 to 9.");
 
 		}
 	}
@@ -325,17 +326,34 @@ public class Menu {
 
 	/**
 	 * Displays all active rental transactions.
-	 */
+	*/
 	private void viewRentals() {
 		ConsoleUtils.clearScreen();
 		out.println("ACTIVE RENTAL RECORDS\n\n");
 		ConsoleUtils.displayActiveRentalsTable(rentalService.getActiveRentals());
 		ConsoleUtils.waitForEnter(scan);
 	}
+	
+	/**
+	 * Displays a comprehensive fleet statistics report using a broad range of
+	 * stream terminal and intermediate operations.
+	 */
+	private void showFleetStatistics() {
+		ConsoleUtils.clearScreen();
+		out.println("FLEET STATISTICS\n");
+		out.println(vehicleManager.getFleetStatistics());
 
+		// ADVANCED Consumer<Vehicle> lambda — forEach used to print each vehicle summary
+		out.println("Full fleet:");
+		vehicleManager.forEachVehicle(
+				v -> out.printf("  %d. %s %s%n", v.getVehicleId(), v.getMake(), v.getModel()));
+
+		ConsoleUtils.waitForEnter(scan);
+	}
+	
 	/**
 	 * Displays the main menu options.
-	 */
+	*/
 	private void showOptions() {
 		out.println("************************************************************");
 		out.println("*                                                          *");
@@ -350,7 +368,9 @@ public class Menu {
 		out.println("(5) Process Vehicle Rental");
 		out.println("(6) Process Vehicle Return");
 		out.println("(7) View Active Rental Records");
-		out.println("(8) Exit");
+		out.println("(8) Fleet Statistics");
+		out.println("(9) Exit");
 	}
+
 
 }
