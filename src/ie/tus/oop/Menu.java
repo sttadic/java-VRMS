@@ -348,6 +348,10 @@ public class Menu {
 		vehicleManager.forEachVehicle(
 				v -> out.printf("  %d. %s %s%n", v.getVehicleId(), v.getMake(), v.getModel()));
 
+		// ADVANCED Stream Gatherers (JEP 485)
+		out.println("\n--- VEHICLE TIERS ---\n");
+		out.println(vehicleManager.getVehicleTiers());
+
 		ConsoleUtils.waitForEnter(scan);
 	}
 	

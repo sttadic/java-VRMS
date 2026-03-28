@@ -10,6 +10,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Gatherer;
+import java.util.stream.Gatherers;
 
 /**
  * Manages the fleet of vehicles in the rental system. Provides methods for
@@ -214,6 +216,52 @@ public class VehicleManager {
 				.collect(Collectors.toMap(Vehicle::getVehicleId, Vehicle::getDailyRate));
 		sb.append("ID → Daily rate:\n");
 		idToRate.forEach((id, rate) -> sb.append(String.format("  %d → €%.2f%n", id, rate)));
+
+		return sb.toString();
+	}
+
+	/**
+	 * Produces a tier report using built-in and custom Stream Gatherers. The
+	 * built-in {@code Gatherers.windowFixed(2)} groups adjacent vehicles (sorted by
+	 * rate) into pairs to surface price gaps. A custom gatherer classifies each
+	 * vehicle into a Budget, Mid-Range, or Premium tier by daily rate.
+	 *
+	 * @return a formatted multi-line string containing the tier analysis
+	 */
+	// ADVANCED Stream Gatherers (JEP 485) — built-in Gatherers.windowFixed() and custom Gatherer.ofSequential()
+	public String getVehicleTiers() {
+		StringBuilder sb = new StringBuilder();
+
+		// Built-in gatherer: windowFixed(2) — groups adjacent sorted vehicles into fixed-size windows
+		// Used here to surface the price gap between each consecutive pair
+		sb.append("Price gaps between adjacent vehicles (by rate):\n");
+		vehicles.stream()
+				.sorted(Comparator.comparing(Vehicle::getDailyRate))
+				.gather(Gatherers.windowFixed(2))
+				.forEach(pair -> {
+					if (pair.size() < 2) return;
+					double gap = pair.get(1).getDailyRate() - pair.get(0).getDailyRate();
+					sb.append(String.format("  %s %s (€%.2f) → %s %s (€%.2f) : gap €%.2f%n",
+							pair.get(0).getMake(), pair.get(0).getModel(), pair.get(0).getDailyRate(),
+							pair.get(1).getMake(), pair.get(1).getModel(), pair.get(1).getDailyRate(),
+							gap));
+				});
+
+		// Custom gatherer: classifies each vehicle into a pricing tier and emits (tier, vehicle) pairs
+		// Budget: < €20/day  |  Mid-Range: €20–40/day  |  Premium: > €40/day
+		Gatherer<Vehicle, Void, Map.Entry<String, Vehicle>> tierGatherer = Gatherer.ofSequential(
+				(ignored, vehicle, downstream) -> {
+					double rate = vehicle.getDailyRate();
+					String tier = rate < 20 ? "Budget" : rate <= 40 ? "Mid-Range" : "Premium";
+					return downstream.push(Map.entry(tier, vehicle));
+				});
+
+		sb.append("\nVehicle pricing tiers:\n");
+		vehicles.stream()
+				.gather(tierGatherer)
+				.forEach(entry -> sb.append(String.format("  %-10s: %s %s (€%.2f/day)%n",
+						entry.getKey(), entry.getValue().getMake(), entry.getValue().getModel(),
+						entry.getValue().getDailyRate())));
 
 		return sb.toString();
 	}
