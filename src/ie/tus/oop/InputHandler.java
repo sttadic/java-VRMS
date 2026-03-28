@@ -113,8 +113,8 @@ public class InputHandler {
 				String input = scan.nextLine().strip();
 				checkForQuit(input);
 				return switch (input.toLowerCase()) {
-				case "t" -> true;
-				case "f" -> false;
+				case "t", "true", "y", "yes"  -> true;
+				case "f", "false", "n", "no" -> false;
 				default -> throw new InvalidChoiceException(
 						"Invalid input. Please enter either 't' for True or 'f' for False");
 				};

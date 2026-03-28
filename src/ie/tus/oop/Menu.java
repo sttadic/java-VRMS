@@ -2,7 +2,10 @@ package ie.tus.oop;
 
 import static java.lang.System.out;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -17,6 +20,7 @@ public class Menu {
 	private final VehicleManager vehicleManager;
 	private final InputHandler inputHandler;
 	private final RentalService rentalService;
+	private final FleetDataManager fleetDataManager;
 
 	/**
 	 * Constructs a new Menu and initializes all system components.
@@ -25,6 +29,7 @@ public class Menu {
 		vehicleManager = new VehicleManager();
 		inputHandler = new InputHandler(scan);
 		rentalService = new RentalService(vehicleManager, inputHandler);
+		fleetDataManager = new FleetDataManager();
 	}
 
 	/**
@@ -51,7 +56,7 @@ public class Menu {
 	 * @throws InvalidChoiceException if the user enters an invalid choice
 	 */
 	private void handleChoice() {
-		int choice = inputHandler.readInt(ConsoleUtils.GREEN + "\nSelect Option (1-9) > " + ConsoleUtils.RESET);
+		int choice = inputHandler.readInt(ConsoleUtils.GREEN + "\nSelect Option (1-11) > " + ConsoleUtils.RESET);
 
 		switch (choice) {
 		case 1 -> {
@@ -67,8 +72,10 @@ public class Menu {
 		case 6 -> handleVehicleReturn();
 		case 7 -> viewRentals();
 		case 8 -> showFleetStatistics();
-		case 9 -> keepRunning = false;
-		default -> throw new InvalidChoiceException("\nInvalid Selection! Please choose an option from 1 to 9.");
+		case 9 -> exportFleet();
+		case 10 -> importFleet();
+		case 11 -> keepRunning = false;
+		default -> throw new InvalidChoiceException("\nInvalid Selection! Please choose an option from 1 to 11.");
 
 		}
 	}
@@ -356,6 +363,75 @@ public class Menu {
 	}
 	
 	/**
+	 * Handles exporting the fleet to a CSV file.
+	 */
+	// ADVANCED NIO2 - Path.of, Files operations
+	private void exportFleet() {
+		ConsoleUtils.clearScreen();
+		out.println("EXPORT FLEET TO FILE (Enter :q to cancel)\n");
+
+		try {
+			String filename = inputHandler.readString("Enter filename in .csv format (e.g. data/fleet.csv) > ");
+			if (!filename.trim().endsWith(".csv")) {
+				out.println(ConsoleUtils.RED + "Invalid file type. Defaulting to data/fleet.csv");
+				filename = "data/fleet.csv";
+			}
+
+			// ADVANCED NIO2 - Path.of creates a Path object
+			Path path = Path.of(filename);
+			List<Vehicle> vehicles = vehicleManager.getAllVehicles();
+
+			fleetDataManager.exportFleet(vehicles, path);
+			out.println(ConsoleUtils.GREEN + "\nFleet exported successfully to: " + path + ConsoleUtils.RESET);
+			out.println("Total vehicles exported: " + vehicles.size());
+
+		} catch (OperationCancelledException e) {
+			return;
+		} catch (IOException e) {
+			out.println(ConsoleUtils.RED + "\nExport failed: " + e.getMessage() + ConsoleUtils.RESET);
+		}
+
+		ConsoleUtils.waitForEnter(scan);
+	}
+
+	/**
+	 * Handles importing the fleet from a CSV file.
+	 */
+	// ADVANCED NIO2 - Path.of, Files operations
+	private void importFleet() {
+		ConsoleUtils.clearScreen();
+		out.println("IMPORT FLEET FROM FILE (Enter :q to cancel)\n");
+		out.println(ConsoleUtils.RED + "WARNING: This will replace the current fleet!" + ConsoleUtils.RESET);
+
+		try {
+			String filename = inputHandler.readString("Enter filename in .csv format (e.g. data/fleet.csv) > ");
+
+			// ADVANCED NIO2 - Path.of creates a Path object
+			Path path = Path.of(filename);
+
+			boolean confirm = inputHandler.readBoolean("Are you sure? (y)es/(n)o > ");
+			if (!confirm) {
+				out.println("\nImport cancelled.");
+				ConsoleUtils.waitForEnter(scan);
+				return;
+			}
+
+			List<Vehicle> importedVehicles = fleetDataManager.importFleet(path);
+			vehicleManager.replaceFleet(importedVehicles);
+
+			out.println(ConsoleUtils.GREEN + "\nFleet imported successfully from: " + path + ConsoleUtils.RESET);
+			out.println("Total vehicles imported: " + importedVehicles.size());
+
+		} catch (OperationCancelledException e) {
+			return;
+		} catch (IOException e) {
+			out.println(ConsoleUtils.RED + "\nImport failed: " + e.getMessage() + ConsoleUtils.RESET);
+		}
+
+		ConsoleUtils.waitForEnter(scan);
+	}
+
+	/**
 	 * Displays the main menu options.
 	*/
 	private void showOptions() {
@@ -373,7 +449,9 @@ public class Menu {
 		out.println("(6) Process Vehicle Return");
 		out.println("(7) View Active Rental Records");
 		out.println("(8) Fleet Statistics");
-		out.println("(9) Exit");
+		out.println("(9) Export Fleet to File");
+		out.println("(10) Import Fleet from File");
+		out.println("(11) Exit");
 	}
 
 

@@ -107,6 +107,17 @@ public class VehicleManager {
 	}
 
 	/**
+	 * Replaces the entire fleet with a new set of vehicles.
+	 * Used primarily when importing fleet data from a file.
+	 *
+	 * @param newVehicles the new fleet to replace the current one
+	 */
+	public void replaceFleet(List<Vehicle> newVehicles) {
+		vehicles.clear();
+		vehicles.addAll(newVehicles);
+	}
+
+	/**
 	 * Returns a sorted copy of the fleet using the given comparator.
 	 *
 	 * @param comparator the sort order to apply
