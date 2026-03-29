@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -56,7 +57,7 @@ public class Menu {
 	 * @throws InvalidChoiceException if the user enters an invalid choice
 	 */
 	private void handleChoice() {
-		int choice = inputHandler.readInt(ConsoleUtils.GREEN + "\nSelect Option (1-11) > " + ConsoleUtils.RESET);
+		int choice = inputHandler.readInt(ConsoleUtils.GREEN + "\nSelect Option (1-12) > " + ConsoleUtils.RESET);
 
 		switch (choice) {
 		case 1 -> {
@@ -74,8 +75,9 @@ public class Menu {
 		case 8 -> showFleetStatistics();
 		case 9 -> exportFleet();
 		case 10 -> importFleet();
-		case 11 -> keepRunning = false;
-		default -> throw new InvalidChoiceException("\nInvalid Selection! Please choose an option from 1 to 11.");
+		case 11 -> changeLanguage();
+		case 12 -> keepRunning = false;
+		default -> throw new InvalidChoiceException("\nInvalid Selection! Please choose an option from 1 to 12.");
 
 		}
 	}
@@ -432,26 +434,58 @@ public class Menu {
 	}
 
 	/**
+	 * Handles toggling the application language between English and Irish.
+	 */
+	// ADVANCED Localisation - switching locale at runtime
+	private void changeLanguage() {
+		ConsoleUtils.clearScreen();
+		out.println("CHANGE LANGUAGE / ATHRAIGH TEANGA\n");
+		out.println("(1) English");
+		out.println("(2) Croatian (Hrvatski)");
+
+		try {
+			int choice = inputHandler.readInt("Select language > ");
+			switch (choice) {
+			case 1 -> LocaleManager.setLocale(Locale.of("en", "IE"));
+			case 2 -> LocaleManager.setLocale(Locale.of("hr", "HR"));
+			default -> out.println("Invalid choice.");
+			}
+		} catch (OperationCancelledException e) {
+			return;
+		}
+
+		ConsoleUtils.waitForEnter(scan);
+	}
+
+	/**
 	 * Displays the main menu options.
 	*/
+	// ADVANCED Localisation - menu strings sourced from active ResourceBundle
 	private void showOptions() {
+		String title = LocaleManager.getString("menu.title");
+		int innerWidth = 58;
+		int padding = (innerWidth - title.length()) / 2;
+		String centeredTitle = "*" + " ".repeat(padding) + title
+				+ " ".repeat(innerWidth - title.length() - padding) + "*";
+
 		out.println("************************************************************");
 		out.println("*                                                          *");
-		out.println("*             Vehicle Rental Management System             *");
+		out.println(centeredTitle);
 		out.println("*                                                          *");
 		out.println("************************************************************");
 
-		out.println("(1) Display Vehicle Inventory");
-		out.println("(2) Add New Vehicle to Fleet");
-		out.println("(3) Remove Vehicle from Fleet");
-		out.println("(4) Update Rental Price");
-		out.println("(5) Process Vehicle Rental");
-		out.println("(6) Process Vehicle Return");
-		out.println("(7) View Active Rental Records");
-		out.println("(8) Fleet Statistics");
-		out.println("(9) Export Fleet to File");
-		out.println("(10) Import Fleet from File");
-		out.println("(11) Exit");
+		out.println("(1)  " + LocaleManager.getString("menu.option1"));
+		out.println("(2)  " + LocaleManager.getString("menu.option2"));
+		out.println("(3)  " + LocaleManager.getString("menu.option3"));
+		out.println("(4)  " + LocaleManager.getString("menu.option4"));
+		out.println("(5)  " + LocaleManager.getString("menu.option5"));
+		out.println("(6)  " + LocaleManager.getString("menu.option6"));
+		out.println("(7)  " + LocaleManager.getString("menu.option7"));
+		out.println("(8)  " + LocaleManager.getString("menu.option8"));
+		out.println("(9)  " + LocaleManager.getString("menu.option9"));
+		out.println("(10) " + LocaleManager.getString("menu.option10"));
+		out.println("(11) " + LocaleManager.getString("menu.option11"));
+		out.println("(12) " + LocaleManager.getString("menu.option12"));
 	}
 
 
