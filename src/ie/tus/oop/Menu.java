@@ -38,15 +38,20 @@ public class Menu {
 	 * manages exceptions.
 	 */
 	public void runApplication() {
+		// ADVANCED Java 25 - Scoped Values (JEP 487): bind the active locale for each
+		// menu iteration so all rendering in that scope reads the correct locale without
+		// passing it as a parameter
 		while (keepRunning) {
-			ConsoleUtils.clearScreen();
-			showOptions();
-			try {
-				handleChoice();
-			} catch (InvalidChoiceException e) {
-				out.println(e.getMessage());
-				ConsoleUtils.waitForEnter(scan);
-			}
+			ScopedValue.where(LocaleManager.CURRENT_LOCALE, LocaleManager.getActiveLocale()).run(() -> {
+				ConsoleUtils.clearScreen();
+				showOptions();
+				try {
+					handleChoice();
+				} catch (InvalidChoiceException e) {
+					out.println(e.getMessage());
+					ConsoleUtils.waitForEnter(scan);
+				}
+			});
 		}
 		scan.close();
 	}

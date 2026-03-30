@@ -10,20 +10,24 @@ import java.util.ResourceBundle;
  * @author Stjepan Tadic
  */
 // ADVANCED Localisation - ResourceBundle and Locale management
+// ADVANCED Java 25 - Scoped Values (JEP 487)
 public class LocaleManager {
-	private static Locale locale = Locale.of("en", "IE");
-	private static ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
+	// ADVANCED ScopedValue binds the locale per-call-scope rather than globally
+	public static final ScopedValue<Locale> CURRENT_LOCALE = ScopedValue.newInstance();
 
-	public static Locale getLocale() {
-		return locale;
+	// Tracks the user's chosen locale between menu iterations
+	private static Locale activeLocale = Locale.of("en", "IE");
+
+	public static Locale getActiveLocale() {
+		return activeLocale;
 	}
 
 	public static void setLocale(Locale newLocale) {
-		locale = newLocale;
-		bundle = ResourceBundle.getBundle("messages", newLocale);
+		activeLocale = newLocale;
 	}
 
 	public static String getString(String key) {
-		return bundle.getString(key);
+		Locale locale = CURRENT_LOCALE.get();
+		return ResourceBundle.getBundle("messages", locale).getString(key);
 	}
 }
