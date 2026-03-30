@@ -22,6 +22,7 @@ public class Menu {
 	private final InputHandler inputHandler;
 	private final RentalService rentalService;
 	private final FleetDataManager fleetDataManager;
+	private final FleetReportGenerator fleetReportGenerator;
 
 	/**
 	 * Constructs a new Menu and initializes all system components.
@@ -31,6 +32,7 @@ public class Menu {
 		inputHandler = new InputHandler(scan);
 		rentalService = new RentalService(vehicleManager, inputHandler);
 		fleetDataManager = new FleetDataManager();
+		fleetReportGenerator = new FleetReportGenerator(vehicleManager, rentalService);
 	}
 
 	/**
@@ -62,7 +64,7 @@ public class Menu {
 	 * @throws InvalidChoiceException if the user enters an invalid choice
 	 */
 	private void handleChoice() {
-		int choice = inputHandler.readInt(ConsoleUtils.GREEN + "\nSelect Option (1-12) > " + ConsoleUtils.RESET);
+		int choice = inputHandler.readInt(ConsoleUtils.GREEN + "\nSelect Option (1-13) > " + ConsoleUtils.RESET);
 
 		switch (choice) {
 		case 1 -> {
@@ -81,8 +83,9 @@ public class Menu {
 		case 9 -> exportFleet();
 		case 10 -> importFleet();
 		case 11 -> changeLanguage();
-		case 12 -> keepRunning = false;
-		default -> throw new InvalidChoiceException("\nInvalid Selection! Please choose an option from 1 to 12.");
+		case 12 -> generateFleetReport();
+		case 13 -> keepRunning = false;
+		default -> throw new InvalidChoiceException("\nInvalid Selection! Please choose an option from 1 to 13.");
 
 		}
 	}
@@ -439,6 +442,21 @@ public class Menu {
 	}
 
 	/**
+	 * Generates and displays the concurrent fleet report.
+	 */
+	// ADVANCED Concurrency - ExecutorService, Callable, Future
+	private void generateFleetReport() {
+		ConsoleUtils.clearScreen();
+		out.println("GENERATING FLEET REPORT...\n");
+		try {
+			out.println(fleetReportGenerator.generateReport());
+		} catch (Exception e) {
+			out.println(ConsoleUtils.RED + "Report generation failed: " + e.getMessage() + ConsoleUtils.RESET);
+		}
+		ConsoleUtils.waitForEnter(scan);
+	}
+
+	/**
 	 * Handles toggling the application language between English and Irish.
 	 */
 	// ADVANCED Localisation - switching locale at runtime
@@ -491,6 +509,7 @@ public class Menu {
 		out.println("(10) " + LocaleManager.getString("menu.option10"));
 		out.println("(11) " + LocaleManager.getString("menu.option11"));
 		out.println("(12) " + LocaleManager.getString("menu.option12"));
+		out.println("(13) " + LocaleManager.getString("menu.option13"));
 	}
 
 

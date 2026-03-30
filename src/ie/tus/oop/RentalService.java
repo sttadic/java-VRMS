@@ -4,6 +4,7 @@ import static java.lang.System.out;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Manages vehicle rental transactions including starting and ending rentals.
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 public class RentalService {
 	// FUNDAMENTALS List/ArrayList
 	private ArrayList<RentalTransaction> transactions;
+	private final List<RentalReceipt> completedRentals = new ArrayList<>();
 	private VehicleManager vehicleManager;
 	private final InputHandler inputHandler;
 
@@ -102,8 +104,10 @@ public class RentalService {
 		double totalCost = Rentable.calculateRentalCost(effectiveRate, transaction.rentalStartDate(), endDate);
 		String vehicleDescription = vehicleToReturn.getMake() + " " + vehicleToReturn.getModel();
 
-		return new RentalReceipt(transaction.customerName(), finalVehicleToReturn.getVehicleId(), vehicleDescription,
-				transaction.rentalStartDate(), endDate, totalCost);
+		RentalReceipt receipt = new RentalReceipt(transaction.customerName(), finalVehicleToReturn.getVehicleId(),
+				vehicleDescription, transaction.rentalStartDate(), endDate, totalCost);
+		completedRentals.add(receipt);
+		return receipt;
 	}
 
 	/**
@@ -114,6 +118,15 @@ public class RentalService {
 	// ADVANCED call-by-vale and defensive copying
 	public ArrayList<RentalTransaction> getActiveRentals() {
 		return new ArrayList<>(transactions);
+	}
+
+	/**
+	 * Gets a copy of all completed rental receipts.
+	 *
+	 * @return a list of completed rental receipts
+	 */
+	public List<RentalReceipt> getCompletedRentals() {
+		return new ArrayList<>(completedRentals);
 	}
 
 }
