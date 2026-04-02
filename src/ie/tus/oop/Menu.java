@@ -40,9 +40,9 @@ public class Menu {
 	 * manages exceptions.
 	 */
 	public void runApplication() {
-		// ADVANCED Java 25 - Scoped Values (JEP 487): bind the active locale for each
-		// menu iteration so all rendering in that scope reads the correct locale without
-		// passing it as a parameter
+		// EXTRA (Java 25) - Scoped Values (JEP 487): bind the active locale for each
+		// menu iteration so all rendering in that scope reads the correct locale
+		// without passing it as a parameter
 		while (keepRunning) {
 			ScopedValue.where(LocaleManager.CURRENT_LOCALE, LocaleManager.getActiveLocale()).run(() -> {
 				ConsoleUtils.clearScreen();
@@ -67,25 +67,25 @@ public class Menu {
 		int choice = inputHandler.readInt(ConsoleUtils.GREEN + "\nSelect Option (1-13) > " + ConsoleUtils.RESET);
 
 		switch (choice) {
-		case 1 -> {
-			ConsoleUtils.clearScreen();
-			out.println("VEHICLE INVENTORY\n");
-			displayVehicleInventory();
-			displaySortSubMenu();
-		}
-		case 2 -> addNewVehicle();
-		case 3 -> removeVehicle();
-		case 4 -> updateRentalPrice();
-		case 5 -> handleNewRental();
-		case 6 -> handleVehicleReturn();
-		case 7 -> viewRentals();
-		case 8 -> showFleetStatistics();
-		case 9 -> exportFleet();
-		case 10 -> importFleet();
-		case 11 -> changeLanguage();
-		case 12 -> generateFleetReport();
-		case 13 -> keepRunning = false;
-		default -> throw new InvalidChoiceException("\nInvalid Selection! Please choose an option from 1 to 13.");
+			case 1 -> {
+				ConsoleUtils.clearScreen();
+				out.println("VEHICLE INVENTORY\n");
+				displayVehicleInventory();
+				displaySortSubMenu();
+			}
+			case 2 -> addNewVehicle();
+			case 3 -> removeVehicle();
+			case 4 -> updateRentalPrice();
+			case 5 -> handleNewRental();
+			case 6 -> handleVehicleReturn();
+			case 7 -> viewRentals();
+			case 8 -> showFleetStatistics();
+			case 9 -> exportFleet();
+			case 10 -> importFleet();
+			case 11 -> changeLanguage();
+			case 12 -> generateFleetReport();
+			case 13 -> keepRunning = false;
+			default -> throw new InvalidChoiceException("\nInvalid Selection! Please choose an option from 1 to 13.");
 
 		}
 	}
@@ -94,7 +94,6 @@ public class Menu {
 	 * Displays the complete vehicle inventory including all vehicle details.
 	 */
 	private void displayVehicleInventory() {
-		// FUNDAMENTALS lvti - local variable type inference
 		var vehicles = vehicleManager.getAllVehicles();
 
 		ConsoleUtils.displayVehicleInventoryTable(vehicles, vehicleManager.getFleetSize(),
@@ -121,14 +120,14 @@ public class Menu {
 					break;
 				}
 
-				// ADVANCED Comparator.comparing() with method references and chaining
+				// FUNDAMENTALS Comparator.comparing() with method references and chaining
 				Comparator<Vehicle> comparator = switch (choice) {
-				case 1 -> Comparator.comparing(Vehicle::getDailyRate);
-				case 2 -> Comparator.comparing(Vehicle::getModel);
-				case 3 -> Comparator.comparing(Vehicle::getVehicleType);
-				case 4 -> Comparator.comparing(Vehicle::isAvailable).reversed();
-				case 5 -> Comparator.comparing(Vehicle::getDailyRate).thenComparing(Vehicle::getModel);
-				default -> null;
+					case 1 -> Comparator.comparing(Vehicle::getDailyRate);
+					case 2 -> Comparator.comparing(Vehicle::getModel);
+					case 3 -> Comparator.comparing(Vehicle::getVehicleType);
+					case 4 -> Comparator.comparing(Vehicle::isAvailable).reversed();
+					case 5 -> Comparator.comparing(Vehicle::getDailyRate).thenComparing(Vehicle::getModel);
+					default -> null;
 				};
 
 				if (comparator != null) {
@@ -233,20 +232,20 @@ public class Menu {
 	private Vehicle createVehicle(VehicleType type, String make, String model, String colour, FuelType fuelType,
 			double dailyRate) {
 		return switch (type) {
-		// ADVANCED switch expression
-		case CAR -> {
-			boolean hasAirConditioning = inputHandler.readBoolean("Has Air Conditioning? (t)rue/(f)alse > ");
-			boolean hasNavigation = inputHandler.readBoolean("Has Navigation? (t)rue/(f)alse > ");
-			yield new Car(make, model, colour, fuelType, dailyRate, hasAirConditioning, hasNavigation);
-		}
-		case VAN -> {
-			double cargoCapacity = inputHandler.readDouble("Enter Cargo Capacity > ");
-			yield new Van(make, model, colour, fuelType, dailyRate, cargoCapacity);
-		}
-		case BIKE -> {
-			int wheelSize = inputHandler.readInt("Enter Wheel Size > ");
-			yield new Bike(make, model, colour, fuelType, dailyRate, wheelSize);
-		}
+			// FUNDAMENTALS switch expression
+			case CAR -> {
+				boolean hasAirConditioning = inputHandler.readBoolean("Has Air Conditioning? (t)rue/(f)alse > ");
+				boolean hasNavigation = inputHandler.readBoolean("Has Navigation? (t)rue/(f)alse > ");
+				yield new Car(make, model, colour, fuelType, dailyRate, hasAirConditioning, hasNavigation);
+			}
+			case VAN -> {
+				double cargoCapacity = inputHandler.readDouble("Enter Cargo Capacity > ");
+				yield new Van(make, model, colour, fuelType, dailyRate, cargoCapacity);
+			}
+			case BIKE -> {
+				int wheelSize = inputHandler.readInt("Enter Wheel Size > ");
+				yield new Bike(make, model, colour, fuelType, dailyRate, wheelSize);
+			}
 		};
 	}
 
@@ -343,14 +342,14 @@ public class Menu {
 
 	/**
 	 * Displays all active rental transactions.
-	*/
+	 */
 	private void viewRentals() {
 		ConsoleUtils.clearScreen();
 		out.println("ACTIVE RENTAL RECORDS\n\n");
 		ConsoleUtils.displayActiveRentalsTable(rentalService.getActiveRentals());
 		ConsoleUtils.waitForEnter(scan);
 	}
-	
+
 	/**
 	 * Displays a comprehensive fleet statistics report using a broad range of
 	 * stream terminal and intermediate operations.
@@ -360,18 +359,19 @@ public class Menu {
 		out.println("FLEET STATISTICS\n");
 		out.println(vehicleManager.getFleetStatistics());
 
-		// ADVANCED Consumer<Vehicle> lambda — forEach used to print each vehicle summary
+		// FUNDAMENTALS Consumer<Vehicle> lambda — forEach used to print each vehicle
+		// summary
 		out.println("Full fleet:");
 		vehicleManager.forEachVehicle(
 				v -> out.printf("  %d. %s %s%n", v.getVehicleId(), v.getMake(), v.getModel()));
 
-		// ADVANCED Stream Gatherers (JEP 485)
+		// EXTRA (Java 25) Stream Gatherers (JEP 485)
 		out.println("\n--- VEHICLE TIERS ---\n");
 		out.println(vehicleManager.getVehicleTiers());
 
 		ConsoleUtils.waitForEnter(scan);
 	}
-	
+
 	/**
 	 * Handles exporting the fleet to a CSV file.
 	 */
@@ -469,9 +469,9 @@ public class Menu {
 		try {
 			int choice = inputHandler.readInt("Select language > ");
 			switch (choice) {
-			case 1 -> LocaleManager.setLocale(Locale.of("en", "IE"));
-			case 2 -> LocaleManager.setLocale(Locale.of("hr", "HR"));
-			default -> out.println("Invalid choice.");
+				case 1 -> LocaleManager.setLocale(Locale.of("en", "IE"));
+				case 2 -> LocaleManager.setLocale(Locale.of("hr", "HR"));
+				default -> out.println("Invalid choice.");
 			}
 		} catch (OperationCancelledException e) {
 			return;
@@ -482,7 +482,7 @@ public class Menu {
 
 	/**
 	 * Displays the main menu options.
-	*/
+	 */
 	// ADVANCED Localisation - menu strings sourced from active ResourceBundle
 	private void showOptions() {
 		String title = LocaleManager.getString("menu.title");
@@ -511,6 +511,5 @@ public class Menu {
 		out.println("(12) " + LocaleManager.getString("menu.option12"));
 		out.println("(13) " + LocaleManager.getString("menu.option13"));
 	}
-
 
 }

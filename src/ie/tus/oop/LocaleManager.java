@@ -10,9 +10,9 @@ import java.util.ResourceBundle;
  * @author Stjepan Tadic
  */
 // ADVANCED Localisation - ResourceBundle and Locale management
-// ADVANCED Java 25 - Scoped Values (JEP 487)
+// EXTRA (Java 25) - Scoped Values (JEP 487)
 public class LocaleManager {
-	// ADVANCED ScopedValue binds the locale per-call-scope rather than globally
+	// EXTRA ScopedValue binds the locale per-call-scope rather than globally
 	public static final ScopedValue<Locale> CURRENT_LOCALE = ScopedValue.newInstance();
 
 	// Tracks the user's chosen locale between menu iterations

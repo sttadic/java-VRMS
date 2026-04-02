@@ -90,7 +90,7 @@ public class FleetDataManager {
 				v.getFuelType(),
 				v.getDailyRate());
 
-		// ADVANCED pattern matching for instanceof - extract type-specific specs
+		// FUNDAMENTALS pattern matching for instanceof - extract type-specific specs
 		String specs = switch (v) {
 			case Car c -> String.format("%b,%b", c.isAirConditioning(), c.isNavigation());
 			case Van van -> String.format("%.2f", van.getCargoCapacityKg());
@@ -120,7 +120,7 @@ public class FleetDataManager {
 		FuelType fuelType = FuelType.valueOf(parts[4].toUpperCase().trim());
 		double dailyRate = Double.parseDouble(parts[5].trim());
 
-		// ADVANCED switch expression with pattern matching
+		// FUNDAMENTALS switch expression with pattern matching
 		return switch (type) {
 			case CAR -> {
 				if (parts.length < 8) {

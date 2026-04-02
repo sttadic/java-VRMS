@@ -7,9 +7,8 @@ package ie.tus.oop;
  *
  * @author Stjepan Tadic
  */
-//ADVANCED sealed class
+// FUNDAMENTALS sealed class
 public abstract sealed class Vehicle implements Rentable permits Car, Van, Bike {
-	// FUNDAMENTALS encapsulation - private fields + access via getters/setters
 	private static int nextId = 1;
 	private final int vehicleId;
 	private VehicleType vehicleType;
@@ -30,7 +29,6 @@ public abstract sealed class Vehicle implements Rentable permits Car, Van, Bike 
 	 * @param dailyRate the daily rental rate for the vehicle
 	 */
 	public Vehicle(String make, String model, String colour, FuelType fuelType, double dailyRate) {
-		// FUNDAMENTALS this. - reference to the current object instance
 		this.vehicleId = nextId++;
 		this.make = make;
 		this.model = model;
@@ -171,7 +169,6 @@ public abstract sealed class Vehicle implements Rentable permits Car, Van, Bike 
 	 */
 	@Override
 	public String toString() {
-		// FUNDAMENTALS String class
 		return String.format(ConsoleUtils.VEHICLE_ROW_FORMAT, vehicleType, make, model, colour, fuelType, dailyRate,
 				getStatus());
 	}

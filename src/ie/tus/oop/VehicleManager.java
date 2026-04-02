@@ -57,7 +57,6 @@ public class VehicleManager {
 	 * @return the count of available vehicles
 	 */
 	public long getAvailableVehicleCount() {
-		// ADVANCED method reference
 		return vehicles.stream().filter(Vehicle::isAvailable).count();
 	}
 
@@ -91,7 +90,6 @@ public class VehicleManager {
 	 *
 	 * @param newVehicles the vehicles to add
 	 */
-	// FUNDAMENTALS varargs - variable number of arguments
 	public void addVehicles(Vehicle... newVehicles) {
 		vehicles.addAll(Arrays.asList(newVehicles));
 	}
@@ -123,7 +121,7 @@ public class VehicleManager {
 	 * @param comparator the sort order to apply
 	 * @return a sorted list of all vehicles
 	 */
-	// ADVANCED Comparator — passed as a parameter, applied via sorted()
+	// FUNDAMENTALS Comparator — passed as a parameter, applied via sorted()
 	public List<Vehicle> getSortedVehicles(Comparator<Vehicle> comparator) {
 		return vehicles.stream().sorted(comparator).collect(Collectors.toList());
 	}
@@ -133,7 +131,7 @@ public class VehicleManager {
 	 *
 	 * @param action the Consumer to apply to each vehicle
 	 */
-	// ADVANCED Consumer<Vehicle> lambda — forEach terminal operation
+	// FUNDAMENTALS Consumer<Vehicle> lambda — forEach terminal operation
 	public void forEachVehicle(Consumer<Vehicle> action) {
 		vehicles.stream().forEach(action);
 	}
@@ -144,7 +142,7 @@ public class VehicleManager {
 	 * @param mapper the Function that converts a Vehicle to a String
 	 * @return a list of mapped strings, one per vehicle
 	 */
-	// ADVANCED Function<Vehicle, String> lambda — map intermediate operation
+	// FUNDAMENTALS Function<Vehicle, String> lambda — map intermediate operation
 	public List<String> getVehicleSummaries(Function<Vehicle, String> mapper) {
 		return vehicles.stream().map(mapper).collect(Collectors.toList());
 	}
@@ -155,13 +153,16 @@ public class VehicleManager {
 	 *
 	 * @return a formatted multi-line string containing the statistics
 	 */
-	// ADVANCED Streams — terminal: min, max, findAny, allMatch, anyMatch, noneMatch, forEach, groupingBy, partitioningBy, toMap
-	// ADVANCED Streams — intermediate: map, distinct, sorted, limit
-	// ADVANCED Supplier<Optional<Vehicle>> — deferred min/max evaluation
+	// FUNDAMENTALS Streams — terminal: min, max, findAny, allMatch, anyMatch,
+	// noneMatch, forEach, groupingBy, partitioningBy, toMap
+	// FUNDAMENTALS Streams — intermediate: map, distinct, sorted, limit
+	// FUNDAMENTALS Supplier<Optional<Vehicle>> — deferred min/max evaluation
 	public String getFleetStatistics() {
 		StringBuilder sb = new StringBuilder();
 
-		// ADVANCED Supplier<Optional<Vehicle>> — captures live fleet state; evaluated only when .get() is called
+		// FUNDAMENTALS Supplier<Optional<Vehicle>> — captures live fleet state;
+		// evaluated
+		// only when .get() is called
 		Supplier<Optional<Vehicle>> cheapest = () -> vehicles.stream()
 				.min(Comparator.comparing(Vehicle::getDailyRate));
 		Supplier<Optional<Vehicle>> mostExpensive = () -> vehicles.stream()
@@ -239,18 +240,21 @@ public class VehicleManager {
 	 *
 	 * @return a formatted multi-line string containing the tier analysis
 	 */
-	// ADVANCED Stream Gatherers (JEP 485) — built-in Gatherers.windowFixed() and custom Gatherer.ofSequential()
+	// EXTRA (Java 25) Stream Gatherers (JEP 485) — built-in Gatherers.windowFixed()
+	// and custom Gatherer.ofSequential()
 	public String getVehicleTiers() {
 		StringBuilder sb = new StringBuilder();
 
-		// Built-in gatherer: windowFixed(2) — groups adjacent sorted vehicles into fixed-size windows
+		// Built-in gatherer: windowFixed(2) — groups adjacent sorted vehicles into
+		// fixed-size windows
 		// Used here to surface the price gap between each consecutive pair
 		sb.append("Price gaps between adjacent vehicles (by rate):\n");
 		vehicles.stream()
 				.sorted(Comparator.comparing(Vehicle::getDailyRate))
 				.gather(Gatherers.windowFixed(2))
 				.forEach(pair -> {
-					if (pair.size() < 2) return;
+					if (pair.size() < 2)
+						return;
 					double gap = pair.get(1).getDailyRate() - pair.get(0).getDailyRate();
 					sb.append(String.format("  %s %s (€%.2f) → %s %s (€%.2f) : gap €%.2f%n",
 							pair.get(0).getMake(), pair.get(0).getModel(), pair.get(0).getDailyRate(),
@@ -258,8 +262,9 @@ public class VehicleManager {
 							gap));
 				});
 
-		// Custom gatherer: classifies each vehicle into a pricing tier and emits (tier, vehicle) pairs
-		// Budget: < €20/day  |  Mid-Range: €20–40/day  |  Premium: > €40/day
+		// Custom gatherer: classifies each vehicle into a pricing tier and emits (tier,
+		// vehicle) pairs
+		// Budget: < €20/day | Mid-Range: €20–40/day | Premium: > €40/day
 		Gatherer<Vehicle, Void, Map.Entry<String, Vehicle>> tierGatherer = Gatherer.ofSequential(
 				(ignored, vehicle, downstream) -> {
 					double rate = vehicle.getDailyRate();
