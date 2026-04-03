@@ -1,5 +1,6 @@
 package ie.tus.oop;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
@@ -60,7 +61,7 @@ public sealed interface Rentable permits Vehicle {
 	 * @return the formatted currency string (e.g., "€50.00")
 	 */
 	private String formatCurrency(double amount) {
-		return String.format("€%.2f", amount);
+		return NumberFormat.getCurrencyInstance(LocaleManager.CURRENT_LOCALE.get()).format(amount);
 	}
 
 	/**

@@ -1,6 +1,9 @@
 package ie.tus.oop;
 
+import java.text.NumberFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 /**
  * Immutable class representing a rental receipt generated when a vehicle is
@@ -100,9 +103,14 @@ public final class RentalReceipt {
 	 */
 	@Override
 	public String toString() {
+		DateTimeFormatter dateFmt = DateTimeFormatter
+				.ofLocalizedDate(FormatStyle.MEDIUM)
+				.withLocale(LocaleManager.CURRENT_LOCALE.get());
+		String formattedCost = NumberFormat.getCurrencyInstance(LocaleManager.CURRENT_LOCALE.get()).format(totalCost);
 		return String.format(
-				"Receipt for: %s%n" + "Vehicle: %s (ID: %d)%n" + "Rental Period: %s to %s%n" + "Total Cost: €%.2f",
-				customerName, vehicleDescription, vehicleId, rentalStartDate, rentalEndDate, totalCost);
+				"Receipt for: %s%n" + "Vehicle: %s (ID: %d)%n" + "Rental Period: %s to %s%n" + "Total Cost: %s",
+				customerName, vehicleDescription, vehicleId,
+				rentalStartDate.format(dateFmt), rentalEndDate.format(dateFmt), formattedCost);
 	}
 
 }
